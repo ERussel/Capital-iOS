@@ -29,7 +29,10 @@ final class AmountAssembly: AmountAssemblyProtocol {
             let inputValidatorFactory = resolver.inputValidatorFactory
             let transferViewModelFactory = AmountViewModelFactory(amountFormatter: resolver.amountFormatter,
                                                                   amountLimit: resolver.transferAmountLimit,
-                                                                  descriptionValidatorFactory: inputValidatorFactory)
+                                                                  descriptionValidatorFactory: inputValidatorFactory,
+                                                                  feeInfoFactory: resolver.feeInfoFactory,
+                                                                  assetSelectionFactory: assetSelectionFactory,
+                                                                  accessoryFactory: accessoryViewModelFactory)
 
             let presenter = try  AmountPresenter(view: view,
                                                  coordinator: coordinator,
@@ -37,9 +40,7 @@ final class AmountAssembly: AmountAssemblyProtocol {
                                                  dataProviderFactory: dataProviderFactory,
                                                  feeCalculationFactory: resolver.feeCalculationFactory,
                                                  account: resolver.account,
-                                                 transferViewModelFactory: transferViewModelFactory,
-                                                 assetSelectionFactory: assetSelectionFactory,
-                                                 accessoryFactory: accessoryViewModelFactory)
+                                                 transferViewModelFactory: transferViewModelFactory)
             view.presenter = presenter
 
             return view

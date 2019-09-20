@@ -40,7 +40,6 @@ final class AmountPresenter {
 
     private var feeCalculationFactory: FeeCalculationFactoryProtocol
     private var transferViewModelFactory: AmountViewModelFactoryProtocol
-    private var assetSelectionFactory: AssetSelectionFactoryProtocol
 
     private let dataProviderFactory: DataProviderFactoryProtocol
     private let balanceDataProvider: SingleValueProvider<[BalanceData]>
@@ -60,9 +59,7 @@ final class AmountPresenter {
          dataProviderFactory: DataProviderFactoryProtocol,
          feeCalculationFactory: FeeCalculationFactoryProtocol,
          account: WalletAccountSettingsProtocol,
-         transferViewModelFactory: AmountViewModelFactoryProtocol,
-         assetSelectionFactory: AssetSelectionFactoryProtocol,
-         accessoryFactory: ContactAccessoryViewModelFactoryProtocol) throws {
+         transferViewModelFactory: AmountViewModelFactoryProtocol) throws {
 
         if let assetId = payload.receiveInfo.assetId, let asset = account.asset(for: assetId.identifier()) {
             selectedAsset = asset
@@ -83,14 +80,11 @@ final class AmountPresenter {
 
         self.feeCalculationFactory = feeCalculationFactory
         self.transferViewModelFactory = transferViewModelFactory
-        self.assetSelectionFactory = assetSelectionFactory
         
         descriptionInputViewModel = try transferViewModelFactory.createDescriptionViewModel()
 
-        let assetTitle = assetSelectionFactory.createTitle(for: selectedAsset, balanceData: nil)
-        assetSelectionViewModel = AssetSelectionViewModel(assetId: selectedAsset.identifier,
-                                                          title: assetTitle,
-                                                          symbol: selectedAsset.symbol)
+        assetSelectionViewModel = transferViewModelFactory.createAssetSelectionViewModel(for: selectedAsset,
+                                                                                         balance: nil)
         assetSelectionViewModel.canSelect = account.assets.count > 1
 
         var decimalAmount: Decimal?
@@ -101,52 +95,78 @@ final class AmountPresenter {
 
         amountInputViewModel = transferViewModelFactory.createAmountViewModel(with: decimalAmount)
 
-        accessoryViewModel = accessoryFactory.createViewModel(from: payload.receiverName,
-                                                              fullName: payload.receiverName,
-                                                              action: "Next")
+        accessoryViewModel = transferViewModelFactory.createAccessoryViewModel(for: payload.receiverName)
 
-        let feeTitle = transferViewModelFactory.createFeeTitle(for: selectedAsset, amount: nil)
-        feeViewModel = FeeViewModel(title: feeTitle)
+        feeViewModel = transferViewModelFactory.createMainFeeViewModel(for: selectedAsset, amount: nil)
         feeViewModel.isLoading = true
     }
 
-    private func updateFeeViewModel(for asset: WalletAsset) {
-        guard
-            let amount = amountInputViewModel.decimalAmount,
-            let metadata = metadata,
-            let feeRate = metadata.feeRateDecimal else {
-                feeViewModel.title = transferViewModelFactory.createFeeTitle(for: asset, amount: nil)
+    private func updateMainFeeViewModel() {
+        guard let amount = amountInputViewModel.decimalAmount, let metadata = metadata else {
+                feeViewModel.title = transferViewModelFactory.createFeeTitle(for: selectedAsset, feeAsset: selectedAsset, amount: nil)
                 feeViewModel.isLoading = true
                 return
         }
 
-        do {
-            let feeCalculator = try feeCalculationFactory
-                .createTransferFeeStrategy(for: metadata.feeType,
-                                           assetId: selectedAsset.identifier,
-                                           parameters: [feeRate])
-
-            let fee = try feeCalculator.calculate(for: amount)
-
-            feeViewModel.title = transferViewModelFactory.createFeeTitle(for: asset, amount: fee)
+        guard let fee = metadata.fees.first(where: { $0.assetId == selectedAsset.identifier.identifier() }) else {
+            feeViewModel.title = transferViewModelFactory.createFeeTitle(for: selectedAsset, feeAsset: selectedAsset, amount: 0.0)
             feeViewModel.isLoading = false
-        } catch {
-            feeViewModel.title = transferViewModelFactory.createFeeTitle(for: asset, amount: nil)
-            feeViewModel.isLoading = true
+            return
         }
+
+        guard
+            let feeAmount = try? calculateFee(for: feeCalculationFactory,
+                                              sourceAsset: selectedAsset,
+                                              fee: fee,
+                                              amount: amount) else {
+            feeViewModel.title = transferViewModelFactory.createFeeTitle(for: selectedAsset, feeAsset: selectedAsset, amount: nil)
+            feeViewModel.isLoading = true
+            return
+        }
+
+        feeViewModel.title = transferViewModelFactory.createFeeTitle(for: selectedAsset, feeAsset: selectedAsset, amount: feeAmount)
+        feeViewModel.isLoading = false
     }
 
-    private func updateSelectedAssetViewModel(for newAsset: WalletAsset) {
+    private func updateAccessoryFeeViewModels() {
+        guard let amount = amountInputViewModel.decimalAmount, let metadata = metadata else {
+                view?.set(accessoryFees: [])
+                return
+        }
+
+        let viewModels: [AccessoryFeeViewModelProtocol] = metadata.fees.filter({ $0.assetId != selectedAsset.identifier.identifier() })
+            .compactMap { fee in
+                guard
+                    let asset = account.asset(for: fee.assetId) else {
+                    return nil
+                }
+
+                let balance = balances?.first { $0.identifier == fee.assetId }
+                let feeAmount = try? calculateFee(for: feeCalculationFactory,
+                                                  sourceAsset: selectedAsset,
+                                                  fee: fee,
+                                                  amount: amount)
+
+                return transferViewModelFactory.createAccessoryFeeViewModel(for: selectedAsset,
+                                                                            feeAsset: asset,
+                                                                            balanceData: balance,
+                                                                            feeAmount: feeAmount)
+        }
+
+        view?.set(accessoryFees: viewModels)
+    }
+
+    private func updateSelectedAssetViewModel() {
         assetSelectionViewModel.isSelecting = false
 
-        assetSelectionViewModel.assetId = newAsset.identifier
+        assetSelectionViewModel.assetId = selectedAsset.identifier
 
-        let balanceData = balances?.first { $0.identifier == newAsset.identifier.identifier() }
-        let title = assetSelectionFactory.createTitle(for: newAsset, balanceData: balanceData)
+        let balanceData = balances?.first { $0.identifier == selectedAsset.identifier.identifier() }
+        let title = transferViewModelFactory.createAssetTitle(for: selectedAsset, balance: balanceData)
 
         assetSelectionViewModel.title = title
 
-        assetSelectionViewModel.symbol = newAsset.symbol
+        assetSelectionViewModel.symbol = selectedAsset.symbol
     }
     
     private func handleResponse(with optionalBalances: [BalanceData]?) {
@@ -173,7 +193,7 @@ final class AmountPresenter {
             return
         }
 
-        assetSelectionViewModel.title = assetSelectionFactory.createTitle(for: asset, balanceData: balanceData)
+        assetSelectionViewModel.title = transferViewModelFactory.createAssetTitle(for: asset, balance: balanceData)
 
         if let currentState = confirmationState {
             confirmationState = currentState.union(.requestedAmount)
@@ -223,7 +243,8 @@ final class AmountPresenter {
             self.metadata = metadata
         }
 
-        updateFeeViewModel(for: selectedAsset)
+        updateMainFeeViewModel()
+        updateAccessoryFeeViewModels()
 
         if let currentState = confirmationState {
             confirmationState = currentState.union(.requestedFee)
@@ -275,57 +296,37 @@ final class AmountPresenter {
                              options: options)
     }
 
-    private func prepareTransferInfo() -> TransferInfo? {
-        do {
-            guard
-                let sendingAmount = amountInputViewModel.decimalAmount,
-                let metadata = metadata,
-                let feeRate = metadata.feeRateDecimal else {
-                    logger?.error("Either amount or metadata missing to complete transfer")
-                    return nil
+    private func prepareTransferInfo(for decimalAmount: Decimal, metadata: TransferMetaData) throws -> TransferInfo {
+        let amount = try IRAmountFactory.amount(from: (decimalAmount as NSNumber).stringValue)
+
+        let fees: [FeeInfo] = try metadata.fees.compactMap { fee in
+            let decimalFeeAmount = try calculateFee(for: feeCalculationFactory,
+                                                    sourceAsset: selectedAsset,
+                                                    fee: fee,
+                                                    amount: decimalAmount)
+
+            guard decimalFeeAmount > 0 else {
+                return nil
             }
 
-            let feeCalculator = try feeCalculationFactory.createTransferFeeStrategy(for: metadata.feeType,
-                                                                                    assetId: selectedAsset.identifier,
-                                                                                    parameters: [feeRate])
-            let fee = try feeCalculator.calculate(for: sendingAmount)
+            let irFeeAmount = try IRAmountFactory.amount(from: (decimalFeeAmount as NSNumber).stringValue)
+            let irAssetId = try IRAssetIdFactory.asset(withIdentifier: fee.assetId)
 
-            let totalAmount = sendingAmount + fee
+            var irAccountId: IRAccountId?
 
-            guard
-                let balanceData = balances?
-                    .first(where: { $0.identifier == selectedAsset.identifier.identifier()}),
-                let currentAmount =  Decimal(string: balanceData.balance),
-                totalAmount <= currentAmount else {
-                    let message = "Sorry, you don't have enough funds to transfer specified amount."
-                    view?.showError(message: message)
-                    return nil
+            if let accountId = fee.accountId {
+                irAccountId = try IRAccountIdFactory.account(withIdentifier: accountId)
             }
 
-            var feeAccountId: IRAccountId?
-            var feeAmount: IRAmount?
-
-            if fee > 0.0 {
-                if let accountIdString = metadata.feeAccountId {
-                    feeAccountId = try IRAccountIdFactory.account(withIdentifier: accountIdString)
-                }
-
-                feeAmount = try IRAmountFactory.amount(from: (fee as NSNumber).stringValue)
-            }
-
-            let amount = try IRAmountFactory.amount(from: (sendingAmount as NSNumber).stringValue)
-
-            return TransferInfo(source: account.accountId,
-                                destination: payload.receiveInfo.accountId,
-                                amount: amount,
-                                asset: selectedAsset.identifier,
-                                details: descriptionInputViewModel.text,
-                                feeAccountId: feeAccountId,
-                                fee: feeAmount)
-        } catch {
-            logger?.error("Did recieve unexpected error \(error) while preparing transfer")
-            return nil
+            return FeeInfo(assetId: irAssetId, amount: irFeeAmount, accountId: irAccountId)
         }
+
+        return TransferInfo(source: account.accountId,
+                            destination: payload.receiveInfo.accountId,
+                            amount: amount,
+                            asset: selectedAsset.identifier,
+                            details: descriptionInputViewModel.text,
+                            fees: fees)
     }
 
     private func completeConfirmation() {
@@ -337,12 +338,46 @@ final class AmountPresenter {
 
         view?.didStopLoading()
 
-        if let transferInfo = prepareTransferInfo() {
+        guard let amount = amountInputViewModel.decimalAmount else {
+            logger?.error("Amount is missing to complete transfer")
+            return
+        }
+
+        guard let metadata = metadata else {
+            logger?.error("Metadata is missing to complete transfer")
+            return
+        }
+
+        guard let balances = balances else {
+            logger?.error("Balances are missing to complete transfer")
+            return
+        }
+
+        do {
+            try checkAmountConstraints(for: feeCalculationFactory,
+                                       sourceAsset: selectedAsset,
+                                       balances: balances,
+                                       fees: metadata.fees,
+                                       amount: amount)
+
+            let transferInfo = try prepareTransferInfo(for: amount, metadata: metadata)
             let composedPayload = TransferPayload(transferInfo: transferInfo,
                                                   receiverName: payload.receiverName,
                                                   assetSymbol: selectedAsset.symbol)
 
             coordinator.confirm(with: composedPayload)
+        } catch AmountCheckError.unsufficientFunds(let assetId) {
+            let message: String
+
+            if let asset = account.asset(for: assetId) {
+                message = "Sorry, you don't have enough \(asset.symbol) asset to transfer specified amount."
+            } else {
+                message = "Sorry, you don't have enough funds to transfer specified amount."
+            }
+
+            view?.showError(message: message)
+        } catch {
+            logger?.error("Did recieve unexpected error \(error) while preparing transfer")
         }
     }
 }
@@ -385,7 +420,7 @@ extension AmountPresenter: AmountPresenterProtocol {
 
         let titles: [String] = account.assets.map { (asset) in
             let balanceData = balances?.first { $0.identifier == asset.identifier.identifier() }
-            return assetSelectionFactory.createTitle(for: asset, balanceData: balanceData)
+            return transferViewModelFactory.createAssetTitle(for: asset, balance: balanceData)
         }
 
         coordinator.presentPicker(for: titles, initialIndex: initialIndex, delegate: self)
@@ -414,8 +449,9 @@ extension AmountPresenter: ModalPickerViewDelegate {
 
                 self.selectedAsset = newAsset
 
-                updateSelectedAssetViewModel(for: newAsset)
-                updateFeeViewModel(for: newAsset)
+                updateSelectedAssetViewModel()
+                updateMainFeeViewModel()
+                updateAccessoryFeeViewModels()
             }
         } catch {
             logger?.error("Unexpected error when new asset selected \(error)")
@@ -425,6 +461,7 @@ extension AmountPresenter: ModalPickerViewDelegate {
 
 extension AmountPresenter: AmountInputViewModelObserver {
     func amountInputDidChange() {
-        updateFeeViewModel(for: selectedAsset)
+        updateMainFeeViewModel()
+        updateAccessoryFeeViewModels()
     }
 }

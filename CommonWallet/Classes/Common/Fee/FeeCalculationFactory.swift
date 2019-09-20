@@ -17,28 +17,21 @@ public enum FeeCalculationFactoryError: Error {
 }
 
 public protocol FeeCalculationFactoryProtocol {
-    func createTransferFeeStrategy(for feeTypeString: String,
-                                   assetId: IRAssetId,
-                                   parameters: [Decimal]) throws -> FeeCalculationStrategyProtocol
-
-    func createWithdrawFeeStrategy(for feeTypeString: String,
-                                   assetId: IRAssetId,
-                                   optionId: String,
-                                   parameters: [Decimal]) throws -> FeeCalculationStrategyProtocol
+    func createTransferFeeStrategy(for asset: WalletAsset, fee: FeeData) throws -> FeeCalculationStrategyProtocol
+    func createWithdrawFeeStrategy(for asset: WalletAsset,
+                                   option: WalletWithdrawOption,
+                                   fee: FeeData) throws -> FeeCalculationStrategyProtocol
 }
 
 public extension FeeCalculationFactoryProtocol {
-    func createTransferFeeStrategy(for feeTypeString: String,
-                                   assetId: IRAssetId,
-                                   parameters: [Decimal]) throws -> FeeCalculationStrategyProtocol {
-        return try createFeeStrategy(for: feeTypeString, parameters: parameters)
+    func createTransferFeeStrategy(for asset: WalletAsset, fee: FeeData) throws -> FeeCalculationStrategyProtocol {
+        return try createFeeStrategy(for: fee.type, parameters: fee.decimalParameters ?? [])
     }
 
-    func createWithdrawFeeStrategy(for feeTypeString: String,
-                                   assetId: IRAssetId,
-                                   optionId: String,
-                                   parameters: [Decimal]) throws -> FeeCalculationStrategyProtocol {
-        return try createFeeStrategy(for: feeTypeString, parameters: parameters)
+    func createWithdrawFeeStrategy(for asset: WalletAsset,
+                                   option: WalletWithdrawOption,
+                                   fee: FeeData) throws -> FeeCalculationStrategyProtocol {
+        return try createFeeStrategy(for: fee.type, parameters: fee.decimalParameters ?? [])
     }
 
     private func createFeeStrategy(for feeTypeString: String,

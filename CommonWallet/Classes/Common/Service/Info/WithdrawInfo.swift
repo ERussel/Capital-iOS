@@ -11,20 +11,17 @@ public struct WithdrawInfo {
     public var assetId: IRAssetId
     public var amount: IRAmount
     public var details: String
-    public var feeAccountId: IRAccountId?
-    public var fee: IRAmount?
+    public var fees: [FeeInfo]
 
     public init(destinationAccountId: IRAccountId,
                 assetId: IRAssetId,
                 amount: IRAmount,
                 details: String,
-                feeAccountId: IRAccountId?,
-                fee: IRAmount?) {
+                fees: [FeeInfo]) {
         self.destinationAccountId = destinationAccountId
         self.assetId = assetId
         self.amount = amount
         self.details = details
-        self.feeAccountId = feeAccountId
-        self.fee = fee
+        self.fees = fees
     }
 }

@@ -27,10 +27,13 @@ final class AmountViewController: UIViewController, AdaptiveDesignable {
     @IBOutlet private var feeTitleLabel: UILabel!
     @IBOutlet private var feeActivityIndicator: UIActivityIndicatorView!
     @IBOutlet private var amountSeparator: BorderedContainerView!
+    @IBOutlet private var accessoryFeeContainerView: AccessoryFeeContainerView!
     @IBOutlet private var descriptionLabel: UILabel!
     @IBOutlet private var descriptionPlaceholderLabel: UILabel!
     @IBOutlet private var descriptionTextView: UITextView!
     @IBOutlet private var descriptionHeight: NSLayoutConstraint!
+
+    var layoutAnimator: BlockViewAnimatorProtocol = BlockViewAnimator()
 
     private var accessoryView: AccessoryViewProtocol?
     private var accessoryBottom: NSLayoutConstraint?
@@ -158,6 +161,8 @@ final class AmountViewController: UIViewController, AdaptiveDesignable {
         descriptionPlaceholderLabel.textColor = style.bodyTextColor
             .withAlphaComponent(Constants.placeholderOpacity)
         descriptionPlaceholderLabel.font = style.bodyRegularFont
+
+        accessoryFeeContainerView.style = style
     }
 
     private func updateConfirmationState() {
@@ -315,6 +320,14 @@ extension AmountViewController: AmountViewProtocol {
         feeViewModel.observable.add(observer: self)
 
         updateConfirmationState()
+    }
+
+    func set(accessoryFees: [AccessoryFeeViewModelProtocol]) {
+        layoutAnimator.animate(block: {
+            self.accessoryFeeContainerView.bind(viewModels: accessoryFees)
+
+            self.view.layoutIfNeeded()
+        }, completionBlock: nil)
     }
 }
 

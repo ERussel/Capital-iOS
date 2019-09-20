@@ -19,3 +19,9 @@ public struct BalanceData: Codable, Equatable {
         self.balance = balance
     }
 }
+
+extension BalanceData {
+    var deceimalBalance: Decimal? {
+        return Decimal(string: balance)
+    }
+}

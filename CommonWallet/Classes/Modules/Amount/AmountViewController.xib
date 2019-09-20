@@ -15,6 +15,7 @@
                 <userDefinedRuntimeAttribute type="string" keyPath="title" value="Set amount"/>
             </userDefinedRuntimeAttributes>
             <connections>
+                <outlet property="accessoryFeeContainerView" destination="Ka1-NH-sNJ" id="ihC-Rn-30j"/>
                 <outlet property="amountField" destination="csw-SL-z5r" id="ayX-Mh-kL5"/>
                 <outlet property="amountLabel" destination="HK4-Di-jYi" id="p10-R0-pDJ"/>
                 <outlet property="amountSeparator" destination="69V-4T-9bH" id="aMC-Mm-r6h"/>
@@ -169,11 +170,15 @@
                                 <outlet property="delegate" destination="-1" id="JCm-Sd-JFJ"/>
                             </connections>
                         </textView>
+                        <view contentMode="scaleToFill" placeholderIntrinsicWidth="355" placeholderIntrinsicHeight="0.0" translatesAutoresizingMaskIntoConstraints="NO" id="Ka1-NH-sNJ" customClass="AccessoryFeeContainerView" customModule="CommonWallet" customModuleProvider="target">
+                            <rect key="frame" x="0.0" y="188" width="375" height="0.0"/>
+                            <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        </view>
                     </subviews>
                     <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                     <constraints>
                         <constraint firstItem="69V-4T-9bH" firstAttribute="trailing" secondItem="3g7-wc-hKL" secondAttribute="trailing" id="1P3-uc-saD"/>
-                        <constraint firstItem="hI2-zD-twK" firstAttribute="top" secondItem="69V-4T-9bH" secondAttribute="bottom" constant="19" id="4Fe-mn-7Kl"/>
+                        <constraint firstItem="Ka1-NH-sNJ" firstAttribute="top" secondItem="69V-4T-9bH" secondAttribute="bottom" id="2v2-Os-akS"/>
                         <constraint firstItem="B5m-P3-ydu" firstAttribute="leading" secondItem="69V-4T-9bH" secondAttribute="leading" constant="-6" id="4fY-DJ-wqF"/>
                         <constraint firstAttribute="trailing" secondItem="XxF-fD-oEA" secondAttribute="trailing" constant="20" id="5Px-9w-ZN3"/>
                         <constraint firstItem="69V-4T-9bH" firstAttribute="leading" secondItem="3g7-wc-hKL" secondAttribute="leading" id="6GN-zK-k8s"/>
@@ -185,8 +190,11 @@
                         <constraint firstItem="3g7-wc-hKL" firstAttribute="top" secondItem="IOD-QX-eJR" secondAttribute="top" id="OAz-8v-BBa"/>
                         <constraint firstItem="69V-4T-9bH" firstAttribute="top" secondItem="3g7-wc-hKL" secondAttribute="bottom" id="RWs-Hd-K3s"/>
                         <constraint firstItem="B5m-P3-ydu" firstAttribute="top" secondItem="w75-wp-pgg" secondAttribute="top" constant="-8" id="Ye1-hK-6oi"/>
+                        <constraint firstItem="hI2-zD-twK" firstAttribute="top" secondItem="Ka1-NH-sNJ" secondAttribute="bottom" constant="19" id="dhT-Ul-vtX"/>
                         <constraint firstItem="XxF-fD-oEA" firstAttribute="top" secondItem="IOD-QX-eJR" secondAttribute="top" id="fI3-Ui-Nag"/>
                         <constraint firstItem="3g7-wc-hKL" firstAttribute="leading" secondItem="IOD-QX-eJR" secondAttribute="leading" constant="20" id="g84-ul-UbK"/>
+                        <constraint firstAttribute="trailing" secondItem="Ka1-NH-sNJ" secondAttribute="trailing" id="kWH-g7-3R6"/>
+                        <constraint firstItem="Ka1-NH-sNJ" firstAttribute="leading" secondItem="IOD-QX-eJR" secondAttribute="leading" id="tOx-97-zgQ"/>
                         <constraint firstItem="XxF-fD-oEA" firstAttribute="leading" secondItem="IOD-QX-eJR" secondAttribute="leading" constant="20" id="uhD-JE-eSI"/>
                         <constraint firstItem="hI2-zD-twK" firstAttribute="trailing" secondItem="69V-4T-9bH" secondAttribute="trailing" id="wc5-VR-ZEP"/>
                         <constraint firstItem="B5m-P3-ydu" firstAttribute="trailing" secondItem="69V-4T-9bH" secondAttribute="trailing" id="xiL-P2-V6q"/>

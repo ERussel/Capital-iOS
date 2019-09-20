@@ -143,13 +143,15 @@ public extension MiddlewareOperationFactoryProtocol {
                                description: info.details,
                                amount: info.amount)
 
-            if let fee = info.fee, let feeAccountId = info.feeAccountId {
-                let feeDescription = "transfer fee"
-                transactionBuilder = transactionBuilder.transferAsset(self.accountSettings.accountId,
-                                                                      destinationAccount: feeAccountId,
-                                                                      assetId: info.asset,
-                                                                      description: feeDescription,
-                                                                      amount: fee)
+            for fee in info.fees {
+                if let feeAccountId = fee.accountId {
+                    let feeDescription = "transfer fee"
+                    transactionBuilder = transactionBuilder.transferAsset(self.accountSettings.accountId,
+                                                                          destinationAccount: feeAccountId,
+                                                                          assetId: fee.assetId,
+                                                                          description: feeDescription,
+                                                                          amount: fee.amount)
+                }
             }
 
             let transaction = try transactionBuilder.withQuorum(self.accountSettings.transactionQuorum)
@@ -294,13 +296,15 @@ public extension MiddlewareOperationFactoryProtocol {
                                description: info.details,
                                amount: info.amount)
 
-            if let fee = info.fee, let feeAccountId = info.feeAccountId {
-                let feeDescription = "withdrawal fee"
-                transactionBuilder = transactionBuilder.transferAsset(self.accountSettings.accountId,
-                                                                      destinationAccount: feeAccountId,
-                                                                      assetId: info.assetId,
-                                                                      description: feeDescription,
-                                                                      amount: fee)
+            for fee in info.fees {
+                if let feeAccountId = fee.accountId {
+                    let feeDescription = "withdrawal fee"
+                    transactionBuilder = transactionBuilder.transferAsset(self.accountSettings.accountId,
+                                                                          destinationAccount: feeAccountId,
+                                                                          assetId: fee.assetId,
+                                                                          description: feeDescription,
+                                                                          amount: fee.amount)
+                }
             }
 
             let transaction = try transactionBuilder
