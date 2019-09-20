@@ -12,6 +12,7 @@
     <objects>
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="WithdrawAmountViewController" customModule="CommonWallet" customModuleProvider="target">
             <connections>
+                <outlet property="accessoryFeeContainerView" destination="4nR-rR-KBj" id="zf2-kL-l5Q"/>
                 <outlet property="amountField" destination="G3a-Eb-rnX" id="uta-cQ-cbU"/>
                 <outlet property="amountLabel" destination="EG7-Oa-hGu" id="9cD-qc-gXu"/>
                 <outlet property="amountSeparator" destination="aBW-0j-XId" id="jsC-H1-5cM"/>
@@ -142,6 +143,10 @@
                                 </userDefinedRuntimeAttribute>
                             </userDefinedRuntimeAttributes>
                         </view>
+                        <view contentMode="scaleToFill" placeholderIntrinsicWidth="355" placeholderIntrinsicHeight="0.0" translatesAutoresizingMaskIntoConstraints="NO" id="4nR-rR-KBj" customClass="AccessoryFeeContainerView" customModule="CommonWallet" customModuleProvider="target">
+                            <rect key="frame" x="0.0" y="188" width="375" height="0.0"/>
+                            <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        </view>
                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Ethereum wallet address" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="kN6-dx-StE">
                             <rect key="frame" x="20" y="208" width="335" height="19"/>
                             <fontDescription key="fontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="16"/>
@@ -171,11 +176,13 @@
                     <constraints>
                         <constraint firstItem="5t9-4M-dlo" firstAttribute="leading" secondItem="kN6-dx-StE" secondAttribute="leading" id="3we-88-hvi"/>
                         <constraint firstItem="ewR-uX-Kpn" firstAttribute="top" secondItem="miV-Qe-rQa" secondAttribute="top" id="4RE-pt-7Eq"/>
+                        <constraint firstAttribute="trailing" secondItem="4nR-rR-KBj" secondAttribute="trailing" id="5Za-vp-feW"/>
                         <constraint firstItem="8qa-Nz-zOJ" firstAttribute="top" secondItem="miV-Qe-rQa" secondAttribute="top" id="5e8-JW-KpS"/>
                         <constraint firstItem="ewR-uX-Kpn" firstAttribute="leading" secondItem="miV-Qe-rQa" secondAttribute="leading" constant="20" id="785-GA-dHM"/>
                         <constraint firstItem="aBW-0j-XId" firstAttribute="trailing" secondItem="8qa-Nz-zOJ" secondAttribute="trailing" id="7xz-qD-dGW"/>
                         <constraint firstItem="uJl-6H-hrA" firstAttribute="top" secondItem="5t9-4M-dlo" secondAttribute="top" constant="-8" id="9Zb-xv-NQd"/>
                         <constraint firstItem="5t9-4M-dlo" firstAttribute="top" secondItem="kN6-dx-StE" secondAttribute="bottom" constant="10" id="CUR-xC-4rm"/>
+                        <constraint firstItem="4nR-rR-KBj" firstAttribute="leading" secondItem="miV-Qe-rQa" secondAttribute="leading" id="D6c-HH-AXM"/>
                         <constraint firstItem="aBW-0j-XId" firstAttribute="top" secondItem="8qa-Nz-zOJ" secondAttribute="bottom" id="DLs-dU-6LK"/>
                         <constraint firstAttribute="trailing" secondItem="ewR-uX-Kpn" secondAttribute="trailing" constant="20" id="DzS-KL-VGg"/>
                         <constraint firstItem="uJl-6H-hrA" firstAttribute="leading" secondItem="aBW-0j-XId" secondAttribute="leading" constant="-6" id="Ebp-k3-tQY"/>
@@ -183,11 +190,12 @@
                         <constraint firstItem="kN6-dx-StE" firstAttribute="trailing" secondItem="aBW-0j-XId" secondAttribute="trailing" id="MFI-ID-Q46"/>
                         <constraint firstAttribute="trailing" secondItem="8qa-Nz-zOJ" secondAttribute="trailing" constant="20" id="MpG-KL-sC2"/>
                         <constraint firstItem="uJl-6H-hrA" firstAttribute="trailing" secondItem="aBW-0j-XId" secondAttribute="trailing" id="OtX-N3-rgA"/>
+                        <constraint firstItem="kN6-dx-StE" firstAttribute="top" secondItem="4nR-rR-KBj" secondAttribute="bottom" constant="20" id="VGv-TH-wlr"/>
                         <constraint firstItem="5t9-4M-dlo" firstAttribute="trailing" secondItem="kN6-dx-StE" secondAttribute="trailing" id="WrA-95-0UP"/>
                         <constraint firstItem="8qa-Nz-zOJ" firstAttribute="leading" secondItem="miV-Qe-rQa" secondAttribute="leading" constant="20" id="mCf-t0-jNO"/>
                         <constraint firstAttribute="bottom" secondItem="uJl-6H-hrA" secondAttribute="bottom" id="mSF-Hm-CJQ"/>
-                        <constraint firstItem="kN6-dx-StE" firstAttribute="top" secondItem="aBW-0j-XId" secondAttribute="bottom" constant="20" id="tVw-iq-QuG"/>
                         <constraint firstItem="kN6-dx-StE" firstAttribute="leading" secondItem="aBW-0j-XId" secondAttribute="leading" id="uZm-mv-THD"/>
+                        <constraint firstItem="aBW-0j-XId" firstAttribute="bottom" secondItem="4nR-rR-KBj" secondAttribute="top" id="xbM-8e-Jtv"/>
                     </constraints>
                 </scrollView>
             </subviews>

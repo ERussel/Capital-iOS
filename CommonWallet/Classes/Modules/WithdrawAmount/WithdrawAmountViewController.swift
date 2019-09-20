@@ -21,6 +21,7 @@ final class WithdrawAmountViewController: AccessoryViewController {
     @IBOutlet private var amountLabel: UILabel!
     @IBOutlet private var amountSymbol: UILabel!
     @IBOutlet private var amountSeparator: BorderedContainerView!
+    @IBOutlet private var accessoryFeeContainerView: AccessoryFeeContainerView!
     @IBOutlet private var feeTitleLabel: UILabel!
     @IBOutlet private var feeActivityIndicator: UIActivityIndicatorView!
     @IBOutlet private var descriptionLabel: UILabel!
@@ -29,6 +30,8 @@ final class WithdrawAmountViewController: AccessoryViewController {
     @IBOutlet private var descriptionHeight: NSLayoutConstraint!
 
     var style: WalletStyleProtocol?
+
+    lazy var layoutAnimator: BlockViewAnimatorProtocol = BlockViewAnimator()
 
     override var accessoryStyle: WalletAccessoryStyleProtocol? {
         return style?.accessoryStyle
@@ -86,6 +89,8 @@ final class WithdrawAmountViewController: AccessoryViewController {
         descriptionPlaceholderLabel.textColor = style.bodyTextColor
             .withAlphaComponent(Constants.placeholderOpacity)
         descriptionPlaceholderLabel.font = style.bodyRegularFont
+
+        accessoryFeeContainerView.style = style
     }
 
     // MARK: Handle Changes
@@ -228,6 +233,14 @@ extension WithdrawAmountViewController: WithdrawAmountViewProtocol {
         feeViewModel.observable.add(observer: self)
 
         updateConfirmationState()
+    }
+
+    func set(accessoryFees: [AccessoryFeeViewModelProtocol]) {
+        layoutAnimator.animate(block: {
+            self.accessoryFeeContainerView.bind(viewModels: accessoryFees)
+
+            self.view.layoutIfNeeded()
+        }, completionBlock: nil)
     }
 }
 

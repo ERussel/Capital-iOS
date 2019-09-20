@@ -55,8 +55,7 @@ final class WithdrawAmountPresenter {
          selectedOption: WalletWithdrawOption,
          dataProviderFactory: DataProviderFactoryProtocol,
          feeCalculationFactory: FeeCalculationFactoryProtocol,
-         withdrawViewModelFactory: WithdrawAmountViewModelFactoryProtocol,
-         assetTitleFactory: AssetSelectionFactoryProtocol) throws {
+         withdrawViewModelFactory: WithdrawAmountViewModelFactoryProtocol) throws {
 
         self.view = view
         self.coordinator = coordinator
@@ -69,76 +68,95 @@ final class WithdrawAmountPresenter {
         self.dataProviderFactory = dataProviderFactory
         self.withdrawViewModelFactory = withdrawViewModelFactory
         self.feeCalculationFactory = feeCalculationFactory
-        self.assetTitleFactory = assetTitleFactory
 
         descriptionInputViewModel = try withdrawViewModelFactory.createDescriptionViewModel()
 
-        let title = assetTitleFactory.createTitle(for: selectedAsset, balanceData: nil)
-        assetSelectionViewModel = AssetSelectionViewModel(assetId: selectedAsset.identifier,
-                                                          title: title,
-                                                          symbol: selectedAsset.symbol)
+        assetSelectionViewModel = withdrawViewModelFactory.createAssetSelectionViewModel(for: selectedAsset, balance: nil)
         assetSelectionViewModel.canSelect = assets.count > 1
 
         amountInputViewModel = withdrawViewModelFactory.createAmountViewModel()
 
-        let feeTitle = withdrawViewModelFactory.createFeeTitle(for: selectedAsset, amount: nil)
-        feeViewModel = FeeViewModel(title: feeTitle)
+        feeViewModel = withdrawViewModelFactory.createMainFeeViewModel(for: selectedAsset, amount: nil)
         feeViewModel.isLoading = true
     }
 
-    private func updateFeeViewModel(for asset: WalletAsset) {
-        guard
-            let amount = amountInputViewModel.decimalAmount,
-            let metadata = metadata,
-            let feeRate = metadata.feeRateDecimal else {
-                feeViewModel.title = withdrawViewModelFactory.createFeeTitle(for: asset, amount: nil)
-                feeViewModel.isLoading = true
-                return
-        }
-
-        do {
-            let calculator = try feeCalculationFactory
-                .createWithdrawFeeStrategy(for: metadata.feeType,
-                                           assetId: selectedAsset.identifier,
-                                           optionId: selectedOption.identifier,
-                                           parameters: [feeRate])
-            let fee = try calculator.calculate(for: amount)
-
-            feeViewModel.title = withdrawViewModelFactory.createFeeTitle(for: asset, amount: fee)
-            feeViewModel.isLoading = false
-        } catch {
-            feeViewModel.title = withdrawViewModelFactory.createFeeTitle(for: asset, amount: nil)
+    private func updateAmountViewModels() {
+        guard let amount = amountInputViewModel.decimalAmount, let metadata = metadata else {
+            feeViewModel.title = withdrawViewModelFactory.createFeeTitle(for: selectedAsset, feeAsset: selectedAsset, amount: nil)
             feeViewModel.isLoading = true
+
+            let accessoryViewModel = withdrawViewModelFactory.createAccessoryViewModel(for: selectedAsset, totalAmount: nil)
+            view?.didChange(accessoryViewModel: accessoryViewModel)
+            return
         }
 
-    }
+        guard let fee = metadata.fees.first(where: { $0.assetId == selectedAsset.identifier.identifier() }) else {
+            feeViewModel.title = withdrawViewModelFactory.createFeeTitle(for: selectedAsset, feeAsset: selectedAsset, amount: 0.0)
+            feeViewModel.isLoading = false
 
-    private func updateAccessoryViewModel(for asset: WalletAsset) {
-        guard
-            let feeRate = metadata?.feeRateDecimal,
-            let amount = amountInputViewModel.decimalAmount else {
-                let accessoryViewModel = withdrawViewModelFactory.createAccessoryViewModel(for: asset, totalAmount: nil)
-                view?.didChange(accessoryViewModel: accessoryViewModel)
-                return
+            let accessoryViewModel = withdrawViewModelFactory.createAccessoryViewModel(for: selectedAsset, totalAmount: nil)
+            view?.didChange(accessoryViewModel: accessoryViewModel)
+
+            return
         }
 
-        let totalAmount = (1 + feeRate) * amount
+        guard let feeAmount = try? calculateFee(for: feeCalculationFactory, sourceAsset: selectedAsset, fee: fee, amount: amount) else {
+            feeViewModel.title = withdrawViewModelFactory.createFeeTitle(for: selectedAsset, feeAsset: selectedAsset, amount: nil)
+            feeViewModel.isLoading = true
 
-        let accessoryViewModel = withdrawViewModelFactory.createAccessoryViewModel(for: asset, totalAmount: totalAmount)
+            let accessoryViewModel = withdrawViewModelFactory.createAccessoryViewModel(for: selectedAsset, totalAmount: nil)
+            view?.didChange(accessoryViewModel: accessoryViewModel)
+
+            return
+        }
+
+        feeViewModel.title = withdrawViewModelFactory.createFeeTitle(for: selectedAsset, feeAsset: selectedAsset, amount: feeAmount)
+        feeViewModel.isLoading = false
+
+        let totalAmount = amount + feeAmount
+        let accessoryViewModel = withdrawViewModelFactory.createAccessoryViewModel(for: selectedAsset, totalAmount: totalAmount)
         view?.didChange(accessoryViewModel: accessoryViewModel)
     }
 
-    private func updateSelectedAssetViewModel(for newAsset: WalletAsset) {
+    private func updateAccessoryFeeViewModels() {
+        guard let amount = amountInputViewModel.decimalAmount, let metadata = metadata else {
+            view?.set(accessoryFees: [])
+            return
+        }
+
+        let viewModels: [AccessoryFeeViewModelProtocol] = metadata.fees.filter({ $0.assetId != selectedAsset.identifier.identifier() })
+            .compactMap { fee in
+                guard
+                    let asset = assets.first(where: { $0.identifier.identifier() == fee.assetId }) else {
+                        return nil
+                }
+
+                let balance = balances?.first { $0.identifier == fee.assetId }
+                let feeAmount = try? calculateFee(for: feeCalculationFactory,
+                                                  sourceAsset: selectedAsset,
+                                                  fee: fee,
+                                                  amount: amount)
+
+                return withdrawViewModelFactory.createAccessoryFeeViewModel(for: selectedAsset,
+                                                                            feeAsset: asset,
+                                                                            balanceData: balance,
+                                                                            feeAmount: feeAmount)
+        }
+
+        view?.set(accessoryFees: viewModels)
+    }
+
+    private func updateSelectedAssetViewModel() {
         assetSelectionViewModel.isSelecting = false
 
-        assetSelectionViewModel.assetId = newAsset.identifier
+        assetSelectionViewModel.assetId = selectedAsset.identifier
 
-        let balanceData = balances?.first { $0.identifier == newAsset.identifier.identifier() }
-        let title = assetTitleFactory.createTitle(for: newAsset, balanceData: balanceData)
+        let balanceData = balances?.first { $0.identifier == selectedAsset.identifier.identifier() }
+        let title = withdrawViewModelFactory.createAssetTitle(for: selectedAsset, balance: balanceData)
 
         assetSelectionViewModel.title = title
 
-        assetSelectionViewModel.symbol = newAsset.symbol
+        assetSelectionViewModel.symbol = selectedAsset.symbol
     }
 
     private func handleBalanceResponse(with optionalBalances: [BalanceData]?) {
@@ -165,7 +183,7 @@ final class WithdrawAmountPresenter {
                 return
         }
 
-        assetSelectionViewModel.title = assetTitleFactory.createTitle(for: asset, balanceData: balanceData)
+        assetSelectionViewModel.title = withdrawViewModelFactory.createAssetTitle(for: asset, balance: balanceData)
 
         if let currentState = confirmationState {
             confirmationState = currentState.union(.requestedAmount)
@@ -215,8 +233,7 @@ final class WithdrawAmountPresenter {
             self.metadata = metadata
         }
 
-        updateFeeViewModel(for: selectedAsset)
-        updateAccessoryViewModel(for: selectedAsset)
+        updateAmountViewModels()
 
         if let currentState = confirmationState {
             confirmationState = currentState.union(.requestedFee)
@@ -231,7 +248,7 @@ final class WithdrawAmountPresenter {
             confirmationState = nil
         }
 
-        let message = "Sorry, we coudn't contact withdraw provider. Please, try again later."
+        let message = "Sorry, we couldn't contact withdraw provider. Please, try again later."
         view?.showError(message: message)
     }
 
@@ -269,59 +286,40 @@ final class WithdrawAmountPresenter {
                              options: options)
     }
 
-    private func prepareWithdrawInfo() -> WithdrawInfo? {
-        do {
-            guard
-                let sendingAmount = amountInputViewModel.decimalAmount,
-                let metadata = metadata,
-                let feeRate = metadata.feeRateDecimal else {
-                    logger?.error("Either amount or metadata missing to complete withdraw")
-                    return nil
+    private func prepareWithdrawInfo(for decimalAmount: Decimal, metadata: WithdrawMetaData) throws -> WithdrawInfo {
+        let amount = try IRAmountFactory.amount(from: (decimalAmount as NSNumber).stringValue)
+
+        let fees: [FeeInfo] = try metadata.fees.compactMap { fee in
+            let decimalFeeAmount = try calculateFee(for: feeCalculationFactory,
+                                                    sourceAsset: selectedAsset,
+                                                    fee: fee,
+                                                    amount: decimalAmount)
+
+            guard decimalFeeAmount > 0 else {
+                return nil
             }
 
-            let feeCalculator = try feeCalculationFactory.createWithdrawFeeStrategy(for: metadata.feeType,
-                                                                                    assetId: selectedAsset.identifier,
-                                                                                    optionId: selectedOption.identifier,
-                                                                                    parameters: [feeRate])
-            let fee = try feeCalculator.calculate(for: sendingAmount)
-            let totalAmount = sendingAmount + fee
+            let irFeeAmount = try IRAmountFactory.amount(from: (decimalFeeAmount as NSNumber).stringValue)
+            let irAssetId = try IRAssetIdFactory.asset(withIdentifier: fee.assetId)
 
-            guard
-                let balanceData = balances?.first(where: { $0.identifier == selectedAsset.identifier.identifier()}),
-                let currentAmount =  Decimal(string: balanceData.balance),
-                totalAmount <= currentAmount else {
-                    let message = "Sorry, you don't have enough funds to transfer specified amount."
-                    view?.showError(message: message)
-                    return nil
+            var irAccountId: IRAccountId?
+
+            if let accountId = fee.accountId {
+                irAccountId = try IRAccountIdFactory.account(withIdentifier: accountId)
             }
 
-            let destinationAccountId = try IRAccountIdFactory.account(withIdentifier: metadata.providerAccountId)
-
-            var feeAccountId: IRAccountId?
-            var feeAmount: IRAmount?
-
-            if fee > 0.0 {
-                if let accountIdString = metadata.feeAccountId {
-                    feeAccountId = try IRAccountIdFactory.account(withIdentifier: accountIdString)
-                }
-
-                feeAmount = try IRAmountFactory.amount(from: (fee as NSNumber).stringValue)
-            }
-
-            let amount = try IRAmountFactory.amount(from: (sendingAmount as NSNumber).stringValue)
-
-            let info = WithdrawInfo(destinationAccountId: destinationAccountId,
-                                    assetId: selectedAsset.identifier,
-                                    amount: amount,
-                                    details: descriptionInputViewModel.text,
-                                    feeAccountId: feeAccountId,
-                                    fee: feeAmount)
-
-            return info
-        } catch {
-            logger?.error("Did receive unexpected error \(error)")
-            return nil
+            return FeeInfo(assetId: irAssetId, amount: irFeeAmount, accountId: irAccountId)
         }
+
+        let providerAccountId = try IRAccountIdFactory.account(withIdentifier: metadata.providerAccountId)
+
+        let info = WithdrawInfo(destinationAccountId: providerAccountId,
+                                assetId: selectedAsset.identifier,
+                                amount: amount,
+                                details: descriptionInputViewModel.text,
+                                fees: fees)
+
+        return info
     }
 
     private func completeConfirmation() {
@@ -333,8 +331,43 @@ final class WithdrawAmountPresenter {
 
         view?.didStopLoading()
 
-        if let info = prepareWithdrawInfo() {
-            coordinator.confirm(with: info, asset: selectedAsset, option: selectedOption)
+        guard let amount = amountInputViewModel.decimalAmount else {
+            logger?.error("Amount is missing to complete withdraw")
+            return
+        }
+
+        guard let metadata = metadata else {
+            logger?.error("Metadata is missing to complete withdraw")
+            return
+        }
+
+        guard let balances = balances else {
+            logger?.error("Balances are missing to complete withdraw")
+            return
+        }
+
+        do {
+            try checkAmountConstraints(for: feeCalculationFactory,
+                                       sourceAsset: selectedAsset,
+                                       balances: balances,
+                                       fees: metadata.fees,
+                                       amount: amount)
+
+            let withdrawInfo = try prepareWithdrawInfo(for: amount, metadata: metadata)
+
+            coordinator.confirm(with: withdrawInfo, asset: selectedAsset, option: selectedOption)
+        } catch AmountCheckError.unsufficientFunds(let assetId) {
+            let message: String
+
+            if let asset = assets.first(where: { $0.identifier.identifier() == assetId }) {
+                message = "Sorry, you don't have enough \(asset.symbol) asset to withdraw specified amount."
+            } else {
+                message = "Sorry, you don't have enough funds to withdraw specified amount."
+            }
+
+            view?.showError(message: message)
+        } catch {
+            logger?.error("Did recieve unexpected error \(error) while preparing withdrawal")
         }
     }
 }
@@ -349,7 +382,8 @@ extension WithdrawAmountPresenter: WithdrawAmountPresenterProtocol {
         view?.set(feeViewModel: feeViewModel)
         view?.set(descriptionViewModel: descriptionInputViewModel)
 
-        updateAccessoryViewModel(for: selectedAsset)
+        let accessoryViewModel = withdrawViewModelFactory.createAccessoryViewModel(for: selectedAsset, totalAmount: nil)
+        view?.didChange(accessoryViewModel: accessoryViewModel)
 
         setupBalanceDataProvider()
         setupMetadata(provider: metaDataProvider)
@@ -377,7 +411,7 @@ extension WithdrawAmountPresenter: WithdrawAmountPresenterProtocol {
 
         let titles: [String] = assets.map { (asset) in
             let balanceData = balances?.first { $0.identifier == asset.identifier.identifier() }
-            return assetTitleFactory.createTitle(for: asset, balanceData: balanceData)
+            return withdrawViewModelFactory.createAssetTitle(for: asset, balance: balanceData)
         }
 
         coordinator.presentPicker(for: titles, initialIndex: initialIndex, delegate: self)
@@ -402,9 +436,9 @@ extension WithdrawAmountPresenter: ModalPickerViewDelegate {
 
                 self.selectedAsset = newAsset
 
-                updateSelectedAssetViewModel(for: newAsset)
-                updateFeeViewModel(for: newAsset)
-                updateAccessoryViewModel(for: newAsset)
+                updateSelectedAssetViewModel()
+                updateAmountViewModels()
+                updateAccessoryFeeViewModels()
             }
         } catch {
             logger?.error("Unexpected error when new asset selected \(error)")
@@ -414,7 +448,7 @@ extension WithdrawAmountPresenter: ModalPickerViewDelegate {
 
 extension WithdrawAmountPresenter: AmountInputViewModelObserver {
     func amountInputDidChange() {
-        updateFeeViewModel(for: selectedAsset)
-        updateAccessoryViewModel(for: selectedAsset)
+        updateAmountViewModels()
+        updateAccessoryFeeViewModels()
     }
 }

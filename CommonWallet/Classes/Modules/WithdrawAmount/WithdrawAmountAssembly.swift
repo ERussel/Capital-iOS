@@ -24,11 +24,13 @@ final class WithdrawAmountAssembly: WithdrawAmountAssemblyProtocol {
 
             let limit = resolver.transferAmountLimit
             let validatorFactory = resolver.inputValidatorFactory
+            let assetTitleFactory = AssetSelectionFactory(amountFormatter: amountFormatter)
             let withdrawViewModelFactory = WithdrawAmountViewModelFactory(amountFormatter: amountFormatter,
                                                                           option: option,
                                                                           amountLimit: limit,
-                                                                          descriptionValidatorFactory: validatorFactory)
-            let assetTitleFactory = AssetSelectionFactory(amountFormatter: amountFormatter)
+                                                                          descriptionValidatorFactory: validatorFactory,
+                                                                          feeInfoFactory: resolver.feeInfoFactory,
+                                                                          assetSelectionFactory: assetTitleFactory)
 
             let presenter = try WithdrawAmountPresenter(view: view,
                                                         coordinator: coordinator,
@@ -37,8 +39,7 @@ final class WithdrawAmountAssembly: WithdrawAmountAssemblyProtocol {
                                                         selectedOption: option,
                                                         dataProviderFactory: dataProviderFactory,
                                                         feeCalculationFactory: resolver.feeCalculationFactory,
-                                                        withdrawViewModelFactory: withdrawViewModelFactory,
-                                                        assetTitleFactory: assetTitleFactory)
+                                                        withdrawViewModelFactory: withdrawViewModelFactory)
 
             presenter.logger = resolver.logger
 

@@ -7,9 +7,17 @@ import Foundation
 
 protocol WithdrawAmountViewModelFactoryProtocol {
     func createWithdrawTitle() -> String
-    func createFeeTitle(for asset: WalletAsset?, amount: Decimal?) -> String
+    func createFeeTitle(for sourceAsset: WalletAsset, feeAsset: WalletAsset, amount: Decimal?) -> String
+    func createAssetTitle(for asset: WalletAsset, balance: BalanceData?) -> String
+
+    func createAssetSelectionViewModel(for asset: WalletAsset, balance: BalanceData?) -> AssetSelectionViewModel
     func createAmountViewModel() -> AmountInputViewModel
     func createDescriptionViewModel() throws -> DescriptionInputViewModel
+    func createMainFeeViewModel(for asset: WalletAsset, amount: Decimal?) -> FeeViewModel
+    func createAccessoryFeeViewModel(for sourceAsset: WalletAsset,
+                                     feeAsset: WalletAsset,
+                                     balanceData: BalanceData?,
+                                     feeAmount: Decimal?) -> AccessoryFeeViewModelProtocol
     func createAccessoryViewModel(for asset: WalletAsset?, totalAmount: Decimal?) -> AccessoryViewModel
 }
 
@@ -22,15 +30,21 @@ final class WithdrawAmountViewModelFactory {
     let amountFormatter: NumberFormatter
     let amountLimit: Decimal
     let descriptionValidatorFactory: WalletInputValidatorFactoryProtocol
+    let feeInfoFactory: FeeInfoFactoryProtocol
+    let assetSelectionFactory: AssetSelectionFactoryProtocol
 
     init(amountFormatter: NumberFormatter,
          option: WalletWithdrawOption,
          amountLimit: Decimal,
-         descriptionValidatorFactory: WalletInputValidatorFactoryProtocol) {
+         descriptionValidatorFactory: WalletInputValidatorFactoryProtocol,
+         feeInfoFactory: FeeInfoFactoryProtocol,
+         assetSelectionFactory: AssetSelectionFactoryProtocol) {
         self.amountFormatter = amountFormatter
         self.option = option
         self.amountLimit = amountLimit
         self.descriptionValidatorFactory = descriptionValidatorFactory
+        self.feeInfoFactory = feeInfoFactory
+        self.assetSelectionFactory = assetSelectionFactory
     }
 }
 
@@ -39,22 +53,44 @@ extension WithdrawAmountViewModelFactory: WithdrawAmountViewModelFactoryProtocol
         return option.shortTitle
     }
 
-    func createFeeTitle(for asset: WalletAsset?, amount: Decimal?) -> String {
-        let title: String = "Transaction fee"
+    func createAssetTitle(for asset: WalletAsset, balance: BalanceData?) -> String {
+        return assetSelectionFactory.createTitle(for: asset, balanceData: balance)
+    }
 
-        guard let amount = amount, let asset = asset else {
+    func createAssetSelectionViewModel(for asset: WalletAsset, balance: BalanceData?) -> AssetSelectionViewModel {
+        let title = createAssetTitle(for: asset, balance: balance)
+        return AssetSelectionViewModel(assetId: asset.identifier, title: title, symbol: asset.symbol)
+    }
+
+    func createFeeTitle(for sourceAsset: WalletAsset, feeAsset: WalletAsset, amount: Decimal?) -> String {
+        let title = feeInfoFactory.createWithdrawAmountTitle(for: sourceAsset,
+                                                             feeAsset: feeAsset,
+                                                             option: option) ?? "Transaction fee"
+
+        guard let amount = amount, let amountString = amountFormatter.string(from: amount as NSNumber) else {
             return title
         }
 
-        guard let amountString = amountFormatter.string(from: amount as NSNumber) else {
-            return title
-        }
-
-        return title + " \(asset.symbol)\(amountString)"
+        return title + " \(feeAsset.symbol)\(amountString)"
     }
 
     func createAmountViewModel() -> AmountInputViewModel {
         return AmountInputViewModel(amount: nil, limit: amountLimit)
+    }
+
+    func createMainFeeViewModel(for asset: WalletAsset, amount: Decimal?) -> FeeViewModel {
+        let title = createFeeTitle(for: asset, feeAsset: asset, amount: amount)
+        return FeeViewModel(title: title)
+    }
+
+    func createAccessoryFeeViewModel(for sourceAsset: WalletAsset,
+                                     feeAsset: WalletAsset,
+                                     balanceData: BalanceData?,
+                                     feeAmount: Decimal?) -> AccessoryFeeViewModelProtocol {
+        let title = createAssetTitle(for: feeAsset, balance: balanceData)
+        let details = createFeeTitle(for: sourceAsset, feeAsset: feeAsset, amount: feeAmount)
+
+        return AccessoryFeeViewModel(title: title, details: details)
     }
 
     func createDescriptionViewModel() throws -> DescriptionInputViewModel {

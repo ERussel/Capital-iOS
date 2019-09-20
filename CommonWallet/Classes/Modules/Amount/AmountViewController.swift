@@ -33,7 +33,7 @@ final class AmountViewController: UIViewController, AdaptiveDesignable {
     @IBOutlet private var descriptionTextView: UITextView!
     @IBOutlet private var descriptionHeight: NSLayoutConstraint!
 
-    var layoutAnimator: BlockViewAnimatorProtocol = BlockViewAnimator()
+    lazy var layoutAnimator: BlockViewAnimatorProtocol = BlockViewAnimator()
 
     private var accessoryView: AccessoryViewProtocol?
     private var accessoryBottom: NSLayoutConstraint?
