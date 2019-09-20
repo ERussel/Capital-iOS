@@ -13,66 +13,104 @@ final class WithdrawConfirmationPresenter {
     let walletService: WalletServiceProtocol
     let withdrawInfo: WithdrawInfo
     let asset: WalletAsset
+    let assets: [WalletAsset]
     let withdrawOption: WalletWithdrawOption
     let style: WalletStyleProtocol
     let amountFormatter: NumberFormatter
     let eventCenter: WalletEventCenterProtocol
+    let feeInfoFactory: FeeInfoFactoryProtocol
 
     init(view: WalletFormViewProtocol,
          coordinator: WithdrawConfirmationCoordinatorProtocol,
          walletService: WalletServiceProtocol,
          withdrawInfo: WithdrawInfo,
          asset: WalletAsset,
+         assets: [WalletAsset],
          withdrawOption: WalletWithdrawOption,
          style: WalletStyleProtocol,
          amountFormatter: NumberFormatter,
-         eventCenter: WalletEventCenterProtocol) {
+         eventCenter: WalletEventCenterProtocol,
+         feeInfoFactory: FeeInfoFactoryProtocol) {
         self.view = view
         self.coordinator = coordinator
         self.walletService = walletService
         self.withdrawInfo = withdrawInfo
         self.asset = asset
+        self.assets = assets
         self.withdrawOption = withdrawOption
         self.style = style
         self.amountFormatter = amountFormatter
         self.eventCenter = eventCenter
+        self.feeInfoFactory = feeInfoFactory
     }
 
-    private func createAmountViewModel() -> WalletFormViewModelProtocol {
-        let details: String
+    private func prepareSigleAmountViewModel(for amount: Decimal, title: String, hasIcon: Bool) -> WalletFormViewModel {
+        let amountString = amountFormatter.string(from: amount as NSNumber) ?? ""
 
-        if let amountDecimal = Decimal(string: withdrawInfo.amount.value),
-            let formatterAmount = amountFormatter.string(from: amountDecimal as NSNumber) {
-            details = "\(asset.symbol)\(formatterAmount)"
-        } else {
-            details = "\(asset.symbol)\(withdrawInfo.amount.value)"
+        let details = asset.symbol + amountString
+
+        var icon: UIImage?
+
+        if hasIcon {
+            icon = style.amountChangeStyle.decrease
         }
 
         return WalletFormViewModel(layoutType: .accessory,
-                                   title: "Amount to send",
-                                   details: details)
+                                   title: title,
+                                   details: details,
+                                   icon: icon)
     }
 
-    private func createFeeViewModel() -> WalletFormViewModelProtocol? {
-        guard let fee = withdrawInfo.fee else {
+    private func prepareFeeViewModel(for fee: FeeInfo, hasIcon: Bool) -> WalletFormViewModel? {
+        guard let amount = Decimal(string: fee.amount.value) else {
             return nil
         }
 
-        let details: String
-
-        if let feeDecimal = Decimal(string: fee.value),
-            let formatterFee = amountFormatter.string(from: feeDecimal as NSNumber) {
-            details = "\(asset.symbol)\(formatterFee)"
-        } else {
-            details = "\(asset.symbol)\(fee.value)"
+        guard let sourceAsset = assets
+            .first(where: { $0.identifier.identifier() == withdrawInfo.assetId.identifier() }) else {
+                return nil
         }
 
+        guard let feeAsset = assets.first(where: { $0.identifier.identifier() == fee.assetId.identifier() }) else {
+                return nil
+        }
+
+        guard let title = feeInfoFactory
+            .createWithdrawAmountTitle(for: sourceAsset, feeAsset: feeAsset, option: withdrawOption) else {
+            return nil
+        }
+
+        guard let amountString = amountFormatter.string(from: amount as NSNumber) else {
+            return nil
+        }
+
+        let details = feeAsset.symbol + amountString
+
+        let icon: UIImage? = hasIcon ? style.amountChangeStyle.decrease : nil
+
         return WalletFormViewModel(layoutType: .accessory,
-                                   title: "Transaction fee",
-                                   details: details)
+                                   title: title,
+                                   details: details,
+                                   icon: icon)
     }
 
-    private func createDescriptionViewModel() -> WalletFormViewModelProtocol? {
+    private func prepareAmountViewModels(for amount: Decimal, fees: [FeeInfo]) -> [WalletFormViewModel] {
+        var viewModels: [WalletFormViewModel] = []
+
+        let amountViewModel = prepareSigleAmountViewModel(for: amount, title: "Amount to send", hasIcon: false)
+
+        viewModels.append(amountViewModel)
+
+        let feeViewModels = fees.compactMap { fee in
+            return prepareFeeViewModel(for: fee, hasIcon: false)
+        }
+
+        viewModels.append(contentsOf: feeViewModels)
+
+        return viewModels
+    }
+
+    private func prepareDescriptionViewModel() -> WalletFormViewModelProtocol? {
         guard !withdrawInfo.details.isEmpty else {
             return nil
         }
@@ -85,8 +123,9 @@ final class WithdrawConfirmationPresenter {
     private func createAccessoryViewModel() -> AccessoryViewModelProtocol {
         let accessoryViewModel = AccessoryViewModel(title: "", action: "Withdraw")
 
-        guard let fee = withdrawInfo.fee,
-            let feeDecimal = Decimal(string: fee.value),
+        guard let feeInfo = withdrawInfo.fees
+            .first(where: { $0.assetId.identifier() == asset.identifier.identifier() }),
+            let feeDecimal = Decimal(string: feeInfo.amount.value),
             let amountDecimal = Decimal(string: withdrawInfo.amount.value) else {
             return accessoryViewModel
         }
@@ -111,20 +150,18 @@ final class WithdrawConfirmationPresenter {
                                                  details: nil)
         viewModels.append(titleViewModel)
 
-        let amountViewModel = createAmountViewModel()
-        viewModels.append(amountViewModel)
-
-        if let feeViewModel = createFeeViewModel() {
-            viewModels.append(feeViewModel)
+        if let decimalAmount = Decimal(string: withdrawInfo.amount.value) {
+            let amountViewModels = prepareAmountViewModels(for: decimalAmount, fees: withdrawInfo.fees)
+            viewModels.append(contentsOf: amountViewModels)
         }
 
-        if let descriptionViewModel = createDescriptionViewModel() {
+        if let descriptionViewModel = prepareDescriptionViewModel() {
             viewModels.append(descriptionViewModel)
         }
 
         view?.didReceive(viewModels: viewModels)
 
-        let accesoryViewModel = createAccessoryViewModel()
+        let accesoryViewModel = prepareAccessoryViewModel()
         view?.didReceive(accessoryViewModel: accesoryViewModel)
     }
 

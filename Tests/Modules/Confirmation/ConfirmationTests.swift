@@ -45,8 +45,9 @@ class ConfirmationTests: NetworkBaseTests {
                                                   service: walletService,
                                                   resolver: resolver,
                                                   payload: transferPayload,
-                                                  accessoryViewModelFactory: accessoryViewModelFactory,
-                                                  eventCenter: eventCenter)
+                                                  eventCenter: eventCenter,
+                                                  feeInfoFactory: FeeInfoFactory(),
+                                                  accessoryViewModelFactory: accessoryViewModelFactory)
 
             // when
 

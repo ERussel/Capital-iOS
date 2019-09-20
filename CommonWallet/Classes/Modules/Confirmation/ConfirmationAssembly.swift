@@ -27,8 +27,9 @@ final class ConfirmationAssembly: ConfirmationAssemblyProtocol {
                                               service: walletService,
                                               resolver: resolver,
                                               payload: payload,
-                                              accessoryViewModelFactory: accessoryViewModelFactory,
-                                              eventCenter: resolver.eventCenter)
+                                              eventCenter: resolver.eventCenter,
+                                              feeInfoFactory: resolver.feeInfoFactory,
+                                              accessoryViewModelFactory: accessoryViewModelFactory)
 
         presenter.logger = resolver.logger
 

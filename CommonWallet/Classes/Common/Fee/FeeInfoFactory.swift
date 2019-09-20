@@ -6,7 +6,9 @@ public protocol FeeInfoFactoryProtocol {
                                        feeAsset: WalletAsset) -> String?
 
     func createTransferAmountTitle(for sourceAsset: WalletAsset, feeAsset: WalletAsset) -> String?
-    func createWithdrawAmountTitle(for sourceAsset: WalletAsset, feeAsset: WalletAsset, option: WalletWithdrawOption) -> String?
+    func createWithdrawAmountTitle(for sourceAsset: WalletAsset,
+                                   feeAsset: WalletAsset,
+                                   option: WalletWithdrawOption) -> String?
 }
 
 public extension FeeInfoFactoryProtocol {
@@ -20,7 +22,9 @@ public extension FeeInfoFactoryProtocol {
         return "Transaction fee"
     }
 
-    func createWithdrawAmountTitle(for sourceAsset: WalletAsset, feeAsset: WalletAsset, option: WalletWithdrawOption) -> String? {
+    func createWithdrawAmountTitle(for sourceAsset: WalletAsset,
+                                   feeAsset: WalletAsset,
+                                   option: WalletWithdrawOption) -> String? {
         return "Transaction fee"
     }
 }

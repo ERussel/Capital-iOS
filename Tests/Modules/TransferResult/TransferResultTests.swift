@@ -30,7 +30,8 @@ class TransferResultTests: NetworkBaseTests {
             let presenter = TransferResultPresenter(view: view,
                                                     coordinator: coordinator,
                                                     payload: transferPayload,
-                                                    resolver: resolver)
+                                                    resolver: resolver,
+                                                    feeInfoFactory: FeeInfoFactory())
 
             // when
 

@@ -155,7 +155,10 @@ class AmountInputConfirmationTests: NetworkBaseTests {
             let inputValidatorFactory = WalletInputValidatorFactoryDecorator(descriptionMaxLength: 64)
             let transferViewModelFactory = AmountViewModelFactory(amountFormatter: amountFormatter,
                                                                   amountLimit: 1e+6,
-                                                                  descriptionValidatorFactory: inputValidatorFactory)
+                                                                  descriptionValidatorFactory: inputValidatorFactory,
+                                                                  feeInfoFactory: FeeInfoFactory(),
+                                                                  assetSelectionFactory: assetSelectionFactory,
+                                                                  accessoryFactory: accessoryViewModelFactory)
 
             let presenter = try AmountPresenter(view: view,
                                                 coordinator: coordinator,
@@ -163,9 +166,7 @@ class AmountInputConfirmationTests: NetworkBaseTests {
                                                 dataProviderFactory: dataProviderFactory,
                                                 feeCalculationFactory: FeeCalculationFactory(),
                                                 account: accountSettings,
-                                                transferViewModelFactory: transferViewModelFactory,
-                                                assetSelectionFactory: assetSelectionFactory,
-                                                accessoryFactory: accessoryViewModelFactory)
+                                                transferViewModelFactory: transferViewModelFactory)
 
             presenter.setup()
 

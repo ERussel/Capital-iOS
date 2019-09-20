@@ -35,10 +35,12 @@ class WithdrawConfirmationTests: NetworkBaseTests {
                                                           walletService: walletService,
                                                           withdrawInfo: withdrawInfo,
                                                           asset: accountSettings.assets[0],
+                                                          assets: accountSettings.assets,
                                                           withdrawOption: accountSettings.withdrawOptions[0],
                                                           style: WalletStyle(),
                                                           amountFormatter: NumberFormatter(),
-                                                          eventCenter: eventCenter)
+                                                          eventCenter: eventCenter,
+                                                          feeInfoFactory: FeeInfoFactory())
 
             // when
 

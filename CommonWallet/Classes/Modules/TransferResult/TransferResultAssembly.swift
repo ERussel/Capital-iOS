@@ -18,7 +18,8 @@ final class TransferResultAssembly: TransferResultAssemblyProtocol {
         let presenter = TransferResultPresenter(view: view,
                                                 coordinator: coordinator,
                                                 payload: transferPayload,
-                                                resolver: resolver)
+                                                resolver: resolver,
+                                                feeInfoFactory: resolver.feeInfoFactory)
         view.presenter = presenter
 
         return view

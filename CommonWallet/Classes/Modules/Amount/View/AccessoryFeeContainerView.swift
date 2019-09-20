@@ -12,7 +12,7 @@ final class AccessoryFeeContainerView: UIView {
     override var intrinsicContentSize: CGSize {
         let totalHeight = feeViews.reduce(CGFloat(0.0)) { (result, view) in
             guard let height = view.constraints
-                .first(where: {$0.firstAttribute == .height} )?.constant else {
+                .first(where: {$0.firstAttribute == .height})?.constant else {
                 return result
             }
 

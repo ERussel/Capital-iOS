@@ -26,10 +26,12 @@ final class WithdrawConfirmationAssembly: WithdrawConfirmationAssemblyProtocol {
                                                       walletService: walletService,
                                                       withdrawInfo: info,
                                                       asset: asset,
+                                                      assets: resolver.account.assets,
                                                       withdrawOption: option,
                                                       style: resolver.style,
                                                       amountFormatter: resolver.amountFormatter,
-                                                      eventCenter: resolver.eventCenter)
+                                                      eventCenter: resolver.eventCenter,
+                                                      feeInfoFactory: resolver.feeInfoFactory)
         view.presenter = presenter
 
         return view

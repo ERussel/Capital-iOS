@@ -71,7 +71,8 @@ final class WithdrawAmountPresenter {
 
         descriptionInputViewModel = try withdrawViewModelFactory.createDescriptionViewModel()
 
-        assetSelectionViewModel = withdrawViewModelFactory.createAssetSelectionViewModel(for: selectedAsset, balance: nil)
+        assetSelectionViewModel = withdrawViewModelFactory.createAssetSelectionViewModel(for: selectedAsset,
+                                                                                         balance: nil)
         assetSelectionViewModel.canSelect = assets.count > 1
 
         amountInputViewModel = withdrawViewModelFactory.createAmountViewModel()
@@ -82,39 +83,54 @@ final class WithdrawAmountPresenter {
 
     private func updateAmountViewModels() {
         guard let amount = amountInputViewModel.decimalAmount, let metadata = metadata else {
-            feeViewModel.title = withdrawViewModelFactory.createFeeTitle(for: selectedAsset, feeAsset: selectedAsset, amount: nil)
+            feeViewModel.title = withdrawViewModelFactory.createFeeTitle(for: selectedAsset,
+                                                                         feeAsset: selectedAsset,
+                                                                         amount: nil)
             feeViewModel.isLoading = true
 
-            let accessoryViewModel = withdrawViewModelFactory.createAccessoryViewModel(for: selectedAsset, totalAmount: nil)
+            let accessoryViewModel = withdrawViewModelFactory.createAccessoryViewModel(for: selectedAsset,
+                                                                                       totalAmount: nil)
             view?.didChange(accessoryViewModel: accessoryViewModel)
             return
         }
 
         guard let fee = metadata.fees.first(where: { $0.assetId == selectedAsset.identifier.identifier() }) else {
-            feeViewModel.title = withdrawViewModelFactory.createFeeTitle(for: selectedAsset, feeAsset: selectedAsset, amount: 0.0)
+            feeViewModel.title = withdrawViewModelFactory.createFeeTitle(for: selectedAsset,
+                                                                         feeAsset: selectedAsset,
+                                                                         amount: 0.0)
             feeViewModel.isLoading = false
 
-            let accessoryViewModel = withdrawViewModelFactory.createAccessoryViewModel(for: selectedAsset, totalAmount: nil)
+            let accessoryViewModel = withdrawViewModelFactory.createAccessoryViewModel(for: selectedAsset,
+                                                                                       totalAmount: nil)
             view?.didChange(accessoryViewModel: accessoryViewModel)
 
             return
         }
 
-        guard let feeAmount = try? calculateFee(for: feeCalculationFactory, sourceAsset: selectedAsset, fee: fee, amount: amount) else {
-            feeViewModel.title = withdrawViewModelFactory.createFeeTitle(for: selectedAsset, feeAsset: selectedAsset, amount: nil)
+        guard let feeAmount = try? calculateFee(for: feeCalculationFactory,
+                                                sourceAsset: selectedAsset,
+                                                fee: fee,
+                                                amount: amount) else {
+            feeViewModel.title = withdrawViewModelFactory.createFeeTitle(for: selectedAsset,
+                                                                         feeAsset: selectedAsset,
+                                                                         amount: nil)
             feeViewModel.isLoading = true
 
-            let accessoryViewModel = withdrawViewModelFactory.createAccessoryViewModel(for: selectedAsset, totalAmount: nil)
+            let accessoryViewModel = withdrawViewModelFactory.createAccessoryViewModel(for: selectedAsset,
+                                                                                       totalAmount: nil)
             view?.didChange(accessoryViewModel: accessoryViewModel)
 
             return
         }
 
-        feeViewModel.title = withdrawViewModelFactory.createFeeTitle(for: selectedAsset, feeAsset: selectedAsset, amount: feeAmount)
+        feeViewModel.title = withdrawViewModelFactory.createFeeTitle(for: selectedAsset,
+                                                                     feeAsset: selectedAsset,
+                                                                     amount: feeAmount)
         feeViewModel.isLoading = false
 
         let totalAmount = amount + feeAmount
-        let accessoryViewModel = withdrawViewModelFactory.createAccessoryViewModel(for: selectedAsset, totalAmount: totalAmount)
+        let accessoryViewModel = withdrawViewModelFactory.createAccessoryViewModel(for: selectedAsset,
+                                                                                   totalAmount: totalAmount)
         view?.didChange(accessoryViewModel: accessoryViewModel)
     }
 
@@ -124,7 +140,8 @@ final class WithdrawAmountPresenter {
             return
         }
 
-        let viewModels: [AccessoryFeeViewModelProtocol] = metadata.fees.filter({ $0.assetId != selectedAsset.identifier.identifier() })
+        let viewModels: [AccessoryFeeViewModelProtocol] = metadata.fees
+            .filter({ $0.assetId != selectedAsset.identifier.identifier() })
             .compactMap { fee in
                 guard
                     let asset = assets.first(where: { $0.identifier.identifier() == fee.assetId }) else {

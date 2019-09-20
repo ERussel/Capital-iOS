@@ -11,12 +11,13 @@ import RobinHood
 final class ConfirmationPresenter {
     weak var view: WalletFormViewProtocol?
     var coordinator: ConfirmationCoordinatorProtocol
-    
+
     let payload: TransferPayload
     let service: WalletServiceProtocol
     let resolver: ResolverProtocol
     let accessoryViewModelFactory: ContactAccessoryViewModelFactoryProtocol
     let eventCenter: WalletEventCenterProtocol
+    let feeInfoFactory: FeeInfoFactoryProtocol
 
     var logger: WalletLoggerProtocol?
 
@@ -25,13 +26,15 @@ final class ConfirmationPresenter {
          service: WalletServiceProtocol,
          resolver: ResolverProtocol,
          payload: TransferPayload,
-         accessoryViewModelFactory: ContactAccessoryViewModelFactoryProtocol,
-         eventCenter: WalletEventCenterProtocol) {
+         eventCenter: WalletEventCenterProtocol,
+         feeInfoFactory: FeeInfoFactoryProtocol,
+         accessoryViewModelFactory: ContactAccessoryViewModelFactoryProtocol) {
         self.view = view
         self.coordinator = coordinator
         self.service = service
         self.payload = payload
         self.resolver = resolver
+        self.feeInfoFactory = feeInfoFactory
         self.accessoryViewModelFactory = accessoryViewModelFactory
         self.eventCenter = eventCenter
     }
@@ -47,70 +50,87 @@ final class ConfirmationPresenter {
         }
     }
 
-    private func prepareFeeViewModel() -> WalletFormViewModel? {
-        guard
-            let feeString = payload.transferInfo.fee?.value,
-            let feeDecimal = Decimal(string: feeString),
-            let formattedAmount = resolver.amountFormatter.string(from: feeDecimal as NSNumber) else {
+    private func prepareSigleAmountViewModel(for amount: Decimal, title: String, hasIcon: Bool) -> WalletFormViewModel {
+        let asset = resolver.account.assets.first {
+            $0.identifier.identifier() == payload.transferInfo.asset.identifier()
+        }
+
+        let assetSymbol = asset?.symbol ?? ""
+        let amountString = resolver.amountFormatter.string(from: amount as NSNumber) ?? ""
+
+        let details = assetSymbol + amountString
+
+        var icon: UIImage?
+
+        if hasIcon {
+            icon = resolver.style.amountChangeStyle.decrease
+        }
+
+        return WalletFormViewModel(layoutType: .accessory,
+                                   title: title,
+                                   details: details,
+                                   icon: icon)
+    }
+
+    private func prepareFeeViewModel(for fee: FeeInfo, hasIcon: Bool) -> WalletFormViewModel? {
+        guard let amount = Decimal(string: fee.amount.value) else {
             return nil
         }
 
-        let details = "\(payload.assetSymbol)\(formattedAmount)"
+        guard let sourceAsset = resolver.account.assets
+            .first(where: { $0.identifier.identifier() == payload.transferInfo.asset.identifier() }) else {
+                return nil
+        }
+
+        guard let feeAsset = resolver.account.assets
+            .first(where: { $0.identifier.identifier() == fee.assetId.identifier() }) else {
+                return nil
+        }
+
+        guard let title = feeInfoFactory.createTransferAmountTitle(for: sourceAsset, feeAsset: feeAsset) else {
+            return nil
+        }
+
+        guard let amountString = resolver.amountFormatter.string(from: amount as NSNumber) else {
+            return nil
+        }
+
+        let details = feeAsset.symbol + amountString
+
+        let icon: UIImage? = hasIcon ? resolver.style.amountChangeStyle.decrease : nil
 
         return WalletFormViewModel(layoutType: .accessory,
-                                   title: "Transaction Fee",
-                                   details: details)
+                                   title: title,
+                                   details: details,
+                                   icon: icon)
     }
 
-    private func prepareSingleAmountViewModel(for amount: String) -> WalletFormViewModel {
-        return WalletFormViewModel(layoutType: .accessory, title: "Amount",
-                                   details: amount,
-                                   icon: resolver.style.amountChangeStyle.decrease)
-    }
+    private func prepareTotal(for amount: Decimal, fees: [FeeInfo]) -> [WalletFormViewModel] {
+        var viewModels: [WalletFormViewModel] = []
 
-    private func prepareAmountViewModels() -> [WalletFormViewModel] {
-        guard
-            let decimalAmount = Decimal(string: payload.transferInfo.amount.value),
-            let formattedAmount = resolver.amountFormatter.string(from: decimalAmount as NSNumber) else {
-                let amount = "\(payload.assetSymbol)\(payload.transferInfo.amount.value)"
+        let amountViewModel = prepareSigleAmountViewModel(for: amount, title: "Amount to send", hasIcon: false)
 
-                let viewModel = prepareSingleAmountViewModel(for: amount)
-                return [viewModel]
+        viewModels.append(amountViewModel)
 
+        let feeViewModels = fees.compactMap { fee in
+            return prepareFeeViewModel(for: fee, hasIcon: false)
         }
 
-        let amount = "\(payload.assetSymbol)\(formattedAmount)"
+        viewModels.append(contentsOf: feeViewModels)
 
-        guard
-            let feeString = payload.transferInfo.fee?.value,
-            let decimalFee = Decimal(string: feeString),
-            let formattedFee = resolver.amountFormatter.string(from: decimalFee as NSNumber) else {
-                let viewModel = prepareSingleAmountViewModel(for: amount)
-                return [viewModel]
+        let totalAmount: Decimal = fees.reduce(amount) { (result, fee) in
+            guard let decimalFee = Decimal(string: fee.amount.value) else {
+                return result
+            }
+
+            return result + decimalFee
         }
 
-        let totalAmountDecimal = decimalAmount + decimalFee
+        let totalAmountViewModel = prepareSigleAmountViewModel(for: totalAmount,
+                                                              title: "Total amount",
+                                                              hasIcon: true)
 
-        let amountViewModel = WalletFormViewModel(layoutType: .accessory,
-                                                  title: "Amount to send",
-                                                  details: amount)
-
-        let fee = "\(payload.assetSymbol)\(formattedFee)"
-
-        let feeViewModel = WalletFormViewModel(layoutType: .accessory,
-                                               title: "Transaction fee",
-                                               details: fee)
-
-        var viewModels = [amountViewModel, feeViewModel]
-
-        if let formattedTotalAmount = resolver.amountFormatter.string(from: totalAmountDecimal as NSNumber) {
-            let totalAmount = "\(payload.assetSymbol)\(formattedTotalAmount)"
-            let totalAmountViewModel = WalletFormViewModel(layoutType: .accessory,
-                                                           title: "Total amount",
-                                                           details: totalAmount,
-                                                           icon: resolver.style.amountChangeStyle.decrease)
-            viewModels.append(totalAmountViewModel)
-        }
+        viewModels.append(totalAmountViewModel)
 
         return viewModels
     }
@@ -122,9 +142,11 @@ final class ConfirmationPresenter {
                                               title: "Please check and confirm details",
                                               details: nil))
 
-        let amountViewModels = prepareAmountViewModels()
+        if let decimalAmount = Decimal(string: payload.transferInfo.amount.value) {
+            let amountViewModels = prepareTotal(for: decimalAmount, fees: payload.transferInfo.fees)
 
-        viewModels.append(contentsOf: amountViewModels)
+            viewModels.append(contentsOf: amountViewModels)
+        }
 
         if !payload.transferInfo.details.isEmpty {
             viewModels.append(WalletFormViewModel(layoutType: .details,

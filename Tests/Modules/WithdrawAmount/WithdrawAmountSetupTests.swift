@@ -75,10 +75,13 @@ class WithdrawAmountSetupTests: NetworkBaseTests {
 
         let amountFormatter = NumberFormatter()
         let inputValidatorFactory = WalletInputValidatorFactoryDecorator(descriptionMaxLength: 64)
+        let assetSelectionFactory = AssetSelectionFactory(amountFormatter: amountFormatter)
         let viewModelFactory = WithdrawAmountViewModelFactory(amountFormatter: amountFormatter,
                                                               option: withdrawOption,
                                                               amountLimit: 100,
-                                                              descriptionValidatorFactory: inputValidatorFactory)
+                                                              descriptionValidatorFactory: inputValidatorFactory,
+                                                              feeInfoFactory: FeeInfoFactory(),
+                                                              assetSelectionFactory: assetSelectionFactory)
 
         let view = MockWithdrawAmountViewProtocol()
         let coordinator = MockWithdrawAmountCoordinatorProtocol()
@@ -158,8 +161,7 @@ class WithdrawAmountSetupTests: NetworkBaseTests {
                                                     selectedOption: withdrawOption,
                                                     dataProviderFactory: dataProviderFactory,
                                                     feeCalculationFactory: FeeCalculationFactory(),
-                                                    withdrawViewModelFactory: viewModelFactory,
-                                                    assetTitleFactory: AssetSelectionFactory(amountFormatter: amountFormatter))
+                                                    withdrawViewModelFactory: viewModelFactory)
 
         presenter.setup()
 

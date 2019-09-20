@@ -25,10 +25,12 @@ class WithdrawResultTests: NetworkBaseTests {
                                                     coordinator: coordinator,
                                                     withdrawInfo: withdrawInfo,
                                                     asset: accountSettings.assets[0],
+                                                    assets: accountSettings.assets,
                                                     withdrawOption: accountSettings.withdrawOptions[0],
                                                     style: WalletStyle(),
                                                     amountFormatter: NumberFormatter(),
-                                                    dateFormatter: DateFormatter())
+                                                    dateFormatter: DateFormatter(),
+                                                    feeInfoFactory: FeeInfoFactory())
 
             // when
 

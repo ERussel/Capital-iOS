@@ -100,7 +100,7 @@ final class TransactionDetailsPresenter {
         guard let title = feeInfoFactory.createTransactionDetailsTitle(for: transactionType,
                                                                        sourceAsset: sourceAsset,
                                                                        feeAsset: feeAsset) else {
-                return nil
+            return nil
         }
 
         guard let amountString = resolver.amountFormatter.string(from: amount as NSNumber) else {

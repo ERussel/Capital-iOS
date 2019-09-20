@@ -21,10 +21,12 @@ final class WithdrawResultAssembly: WithdrawResultAssemblyProtocol {
                                                 coordinator: coordinator,
                                                 withdrawInfo: info,
                                                 asset: asset,
+                                                assets: resolver.account.assets,
                                                 withdrawOption: option,
                                                 style: resolver.style,
                                                 amountFormatter: resolver.amountFormatter,
-                                                dateFormatter: resolver.statusDateFormatter)
+                                                dateFormatter: resolver.statusDateFormatter,
+                                                feeInfoFactory: resolver.feeInfoFactory)
         view.presenter = presenter
 
         return view

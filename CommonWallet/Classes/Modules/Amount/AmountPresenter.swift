@@ -103,13 +103,17 @@ final class AmountPresenter {
 
     private func updateMainFeeViewModel() {
         guard let amount = amountInputViewModel.decimalAmount, let metadata = metadata else {
-                feeViewModel.title = transferViewModelFactory.createFeeTitle(for: selectedAsset, feeAsset: selectedAsset, amount: nil)
+                feeViewModel.title = transferViewModelFactory.createFeeTitle(for: selectedAsset,
+                                                                             feeAsset: selectedAsset,
+                                                                             amount: nil)
                 feeViewModel.isLoading = true
                 return
         }
 
         guard let fee = metadata.fees.first(where: { $0.assetId == selectedAsset.identifier.identifier() }) else {
-            feeViewModel.title = transferViewModelFactory.createFeeTitle(for: selectedAsset, feeAsset: selectedAsset, amount: 0.0)
+            feeViewModel.title = transferViewModelFactory.createFeeTitle(for: selectedAsset,
+                                                                         feeAsset: selectedAsset,
+                                                                         amount: 0.0)
             feeViewModel.isLoading = false
             return
         }
@@ -119,12 +123,16 @@ final class AmountPresenter {
                                               sourceAsset: selectedAsset,
                                               fee: fee,
                                               amount: amount) else {
-            feeViewModel.title = transferViewModelFactory.createFeeTitle(for: selectedAsset, feeAsset: selectedAsset, amount: nil)
+            feeViewModel.title = transferViewModelFactory.createFeeTitle(for: selectedAsset,
+                                                                         feeAsset: selectedAsset,
+                                                                         amount: nil)
             feeViewModel.isLoading = true
             return
         }
 
-        feeViewModel.title = transferViewModelFactory.createFeeTitle(for: selectedAsset, feeAsset: selectedAsset, amount: feeAmount)
+        feeViewModel.title = transferViewModelFactory.createFeeTitle(for: selectedAsset,
+                                                                     feeAsset: selectedAsset,
+                                                                     amount: feeAmount)
         feeViewModel.isLoading = false
     }
 
@@ -134,7 +142,8 @@ final class AmountPresenter {
                 return
         }
 
-        let viewModels: [AccessoryFeeViewModelProtocol] = metadata.fees.filter({ $0.assetId != selectedAsset.identifier.identifier() })
+        let viewModels: [AccessoryFeeViewModelProtocol] = metadata.fees
+            .filter({ $0.assetId != selectedAsset.identifier.identifier() })
             .compactMap { fee in
                 guard
                     let asset = account.asset(for: fee.assetId) else {
