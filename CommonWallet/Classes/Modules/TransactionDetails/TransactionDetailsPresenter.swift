@@ -16,6 +16,7 @@ final class TransactionDetailsPresenter {
     let transactionData: AssetTransactionData
     let transactionType: WalletTransactionType
     let accessoryViewModelFactory: ContactAccessoryViewModelFactoryProtocol
+    let feeInfoFactory: FeeInfoFactoryProtocol
 
     init(view: WalletFormViewProtocol,
          coordinator: TransactionDetailsCoordinatorProtocol,
@@ -23,7 +24,8 @@ final class TransactionDetailsPresenter {
          resolver: ResolverProtocol,
          transactionData: AssetTransactionData,
          transactionType: WalletTransactionType,
-         accessoryViewModelFactory: ContactAccessoryViewModelFactoryProtocol) {
+         accessoryViewModelFactory: ContactAccessoryViewModelFactoryProtocol,
+         feeInfoFactory: FeeInfoFactoryProtocol) {
         self.view = view
         self.coordinator = coordinator
         self.configuration = configuration
@@ -31,6 +33,7 @@ final class TransactionDetailsPresenter {
         self.transactionData = transactionData
         self.transactionType = transactionType
         self.accessoryViewModelFactory = accessoryViewModelFactory
+        self.feeInfoFactory = feeInfoFactory
     }
 
     private func createStatusViewModel(for status: AssetTransactionStatus) -> WalletFormViewModel {
@@ -56,7 +59,7 @@ final class TransactionDetailsPresenter {
         }
     }
 
-    private func createAmountViewModel(for amount: Decimal, title: String, hasIcon: Bool) -> WalletFormViewModel {
+    private func createSigleAmountViewModel(for amount: Decimal, title: String, hasIcon: Bool) -> WalletFormViewModel {
         let asset = resolver.account.assets.first {
             $0.identifier.identifier() == transactionData.assetId
         }
@@ -79,6 +82,71 @@ final class TransactionDetailsPresenter {
                                    icon: icon)
     }
 
+    private func createFeeViewModel(for fee: AssetAmountData, hasIcon: Bool) -> WalletFormViewModel? {
+        guard let amount = fee.decimalAmount else {
+            return nil
+        }
+
+        guard let sourceAsset = resolver.account.assets
+            .first(where: { $0.identifier.identifier() == transactionData.assetId}) else {
+            return nil
+        }
+
+        guard let feeAsset = resolver.account.assets
+            .first(where: { $0.identifier.identifier() == fee.assetId }) else {
+            return nil
+        }
+
+        guard let title = feeInfoFactory.createTransactionDetailsTitle(for: transactionType,
+                                                                       sourceAsset: sourceAsset,
+                                                                       feeAsset: feeAsset) else {
+                return nil
+        }
+
+        guard let amountString = resolver.amountFormatter.string(from: amount as NSNumber) else {
+            return nil
+        }
+
+        let details = feeAsset.symbol + amountString
+
+        let icon: UIImage? = hasIcon ? resolver.style.amountChangeStyle.decrease : nil
+
+        return WalletFormViewModel(layoutType: .accessory,
+                                   title: title,
+                                   details: details,
+                                   icon: icon)
+    }
+
+    private func createTotal(for amount: Decimal, fees: [AssetAmountData]) -> [WalletFormViewModel] {
+        var viewModels: [WalletFormViewModel] = []
+
+        let amountViewModel = createSigleAmountViewModel(for: amount, title: "Amount sent", hasIcon: false)
+
+        viewModels.append(amountViewModel)
+
+        let feeViewModels = fees.compactMap { fee in
+            return createFeeViewModel(for: fee, hasIcon: false)
+        }
+
+        viewModels.append(contentsOf: feeViewModels)
+
+        let totalAmount: Decimal = fees.reduce(amount) { (result, fee) in
+            guard let decimalFee = fee.decimalAmount else {
+                return result
+            }
+
+            return result + decimalFee
+        }
+
+        let totalAmountViewModel = createSigleAmountViewModel(for: totalAmount,
+                                                              title: "Total amount",
+                                                              hasIcon: true)
+
+        viewModels.append(totalAmountViewModel)
+
+        return viewModels
+    }
+
     private func createPeerViewModel() -> WalletFormViewModel? {
         if transactionType.backendName == WalletTransactionType.incoming.backendName {
             return WalletFormViewModel(layoutType: .accessory,
@@ -95,24 +163,40 @@ final class TransactionDetailsPresenter {
         return nil
     }
 
-    private func createAmountFactorViewModels() -> [WalletFormViewModel] {
+    private func createAmountViewModels() -> [WalletFormViewModel] {
         guard let amount = Decimal(string: transactionData.amount) else {
             return []
         }
 
-        if !transactionType.isIncome,
-            let feeString = transactionData.fee,
-            let fee = Decimal(string: feeString),
-            fee > 0.0 {
-            
-            let totalAmount = amount + fee
+        let singleAmountTitle = "Amount"
 
-            return [createAmountViewModel(for: amount, title: "Amount sent", hasIcon: false),
-                    createAmountViewModel(for: fee, title: "Fee", hasIcon: false),
-                    createAmountViewModel(for: totalAmount, title: "Total amount", hasIcon: true)]
-        } else {
-            return [createAmountViewModel(for: amount, title: "Amount", hasIcon: true)]
+        guard !transactionType.isIncome, let fees = transactionData.fees, fees.count > 0 else {
+            let singleAmountViewModel = createSigleAmountViewModel(for: amount,
+                                                                   title: singleAmountTitle,
+                                                                   hasIcon: true)
+            return [singleAmountViewModel]
         }
+
+        let amountFees = fees.filter { $0.assetId == transactionData.assetId }
+        let otherFees = fees.filter { $0.assetId != transactionData.assetId }
+
+        var viewModels: [WalletFormViewModel] = []
+
+        if amountFees.count > 0 {
+            let totalViewModels = createTotal(for: amount, fees: fees)
+            viewModels.append(contentsOf: totalViewModels)
+        } else {
+            let singleViewModel = createSigleAmountViewModel(for: amount, title: singleAmountTitle, hasIcon: true)
+            viewModels.append(singleViewModel)
+        }
+
+        let otherViewModels = otherFees.compactMap { fee in
+            return createFeeViewModel(for: fee, hasIcon: true)
+        }
+
+        viewModels.append(contentsOf: otherViewModels)
+
+        return viewModels
     }
 
     private func createAccessoryViewModel() -> AccessoryViewModel {
@@ -161,7 +245,7 @@ final class TransactionDetailsPresenter {
             viewModels.append(peerViewModel)
         }
 
-        viewModels.append(contentsOf: createAmountFactorViewModels())
+        viewModels.append(contentsOf: createAmountViewModels())
 
         if !transactionData.details.isEmpty {
             let descriptionViewModel = WalletFormViewModel(layoutType: .details,

@@ -5,23 +5,33 @@
 
 import Foundation
 
-enum ResultDataError: Error {
+public enum ResultDataError: Error {
     case missingStatusField
     case unexpectedNumberOfFields
 }
 
-struct StatusData: Decodable {
-    var code: String
-    var message: String
+public struct StatusData: Decodable {
+    public let code: String
+    public let message: String
 
-    var isSuccess: Bool {
+    public var isSuccess: Bool {
         return code == "OK"
+    }
+
+    public init(code: String, message: String) {
+        self.code = code
+        self.message = message
     }
 }
 
-struct ResultData<ResultType> where ResultType: Decodable {
-    var status: StatusData
-    var result: ResultType?
+public struct ResultData<ResultType> where ResultType: Decodable {
+    public let status: StatusData
+    public let result: ResultType?
+
+    public init(status: StatusData, result: ResultType?) {
+        self.status = status
+        self.result = result
+    }
 }
 
 extension ResultData: Decodable {
@@ -44,13 +54,20 @@ extension ResultData: Decodable {
 
         if let resultKey = container.allKeys.first(where: { $0.stringValue != CodingKeys.status.stringValue }) {
             result = try container.decode(ResultType.self, forKey: resultKey)
+        } else {
+            result = nil
         }
     }
 }
 
-struct MultifieldResultData<ResultType> where ResultType: Decodable {
-    var status: StatusData
-    var result: ResultType
+public struct MultifieldResultData<ResultType> where ResultType: Decodable {
+    public let status: StatusData
+    public let result: ResultType
+
+    public init(status: StatusData, result: ResultType) {
+        self.status = status
+        self.result = result
+    }
 }
 
 extension MultifieldResultData: Decodable {

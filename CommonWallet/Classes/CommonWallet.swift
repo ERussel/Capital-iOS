@@ -28,6 +28,9 @@ public protocol CommonWalletBuilderProtocol: class {
     func with(feeCalculationFactory: FeeCalculationFactoryProtocol) -> Self
 
     @discardableResult
+    func with(feeInfoFactory: FeeInfoFactoryProtocol) -> Self
+
+    @discardableResult
     func with(amountFormatter: NumberFormatter) -> Self
 
     @discardableResult
@@ -72,6 +75,7 @@ public final class CommonWalletBuilder {
     fileprivate var account: WalletAccountSettingsProtocol
     fileprivate var networkOperationFactory: WalletNetworkOperationFactoryProtocol
     fileprivate lazy var feeCalculationFactory: FeeCalculationFactoryProtocol = FeeCalculationFactory()
+    fileprivate var feeInfoFactory: FeeInfoFactoryProtocol?
     fileprivate var logger: WalletLoggerProtocol?
     fileprivate var amountFormatter: NumberFormatter?
     fileprivate var statusDateFormatter: DateFormatter?
@@ -145,6 +149,12 @@ extension CommonWalletBuilder: CommonWalletBuilderProtocol {
 
     public func with(feeCalculationFactory: FeeCalculationFactoryProtocol) -> Self {
         self.feeCalculationFactory = feeCalculationFactory
+
+        return self
+    }
+
+    public func with(feeInfoFactory: FeeInfoFactoryProtocol) -> Self {
+        self.feeInfoFactory = feeInfoFactory
 
         return self
     }
@@ -262,6 +272,10 @@ extension CommonWalletBuilder: CommonWalletBuilderProtocol {
 
         if let qrCoderFactory = qrCoderFactory {
             resolver.qrCoderFactory = qrCoderFactory
+        }
+
+        if let feeInfoFactory = feeInfoFactory {
+            resolver.feeInfoFactory = feeInfoFactory
         }
 
         return resolver

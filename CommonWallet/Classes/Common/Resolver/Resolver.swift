@@ -28,6 +28,7 @@ protocol ResolverProtocol: class {
     var inputValidatorFactory: WalletInputValidatorFactoryProtocol { get }
     var feeCalculationFactory: FeeCalculationFactoryProtocol { get }
     var qrCoderFactory: WalletQRCoderFactoryProtocol { get }
+    var feeInfoFactory: FeeInfoFactoryProtocol { get }
 }
 
 final class Resolver: ResolverProtocol {
@@ -53,6 +54,7 @@ final class Resolver: ResolverProtocol {
     lazy var statusDateFormatter: DateFormatter = DateFormatter.statusDateFormatter
     var transferAmountLimit: Decimal = 1e+7
     var transactionTypeList: [WalletTransactionType] = []
+    lazy var feeInfoFactory: FeeInfoFactoryProtocol = FeeInfoFactory()
 
     var logger: WalletLoggerProtocol?
 

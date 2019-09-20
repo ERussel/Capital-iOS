@@ -7,20 +7,10 @@ import Foundation
 
 public struct WithdrawMetaData: Codable, Equatable {
     public var providerAccountId: String
-    public var feeAccountId: String?
-    public var feeType: String
-    public var feeRate: String
+    public var fees: [FeeData]
 
-    public init(providerAccountId: String, feeAccountId: String?, feeType: String, feeRate: String) {
+    public init(providerAccountId: String, fees: [FeeData]) {
         self.providerAccountId = providerAccountId
-        self.feeAccountId = feeAccountId
-        self.feeType = feeType
-        self.feeRate = feeRate
-    }
-}
-
-public extension WithdrawMetaData {
-    var feeRateDecimal: Decimal? {
-        return Decimal(string: feeRate)
+        self.fees = fees
     }
 }

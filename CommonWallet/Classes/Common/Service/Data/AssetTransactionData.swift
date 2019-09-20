@@ -23,7 +23,7 @@ public struct AssetTransactionData: Codable, Equatable {
         case peerName
         case details
         case amount
-        case fee
+        case fees
         case timestamp
         case type
         case reason
@@ -36,7 +36,7 @@ public struct AssetTransactionData: Codable, Equatable {
     public var peerName: String
     public var details: String
     public var amount: String
-    public var fee: String?
+    public var fees: [AssetAmountData]?
     public var timestamp: Int64
     public var type: String
     public var reason: String?
@@ -48,7 +48,7 @@ public struct AssetTransactionData: Codable, Equatable {
                 peerName: String,
                 details: String,
                 amount: String,
-                fee: String?,
+                fees: [AssetAmountData]?,
                 timestamp: Int64,
                 type: String,
                 reason: String?) {
@@ -59,7 +59,7 @@ public struct AssetTransactionData: Codable, Equatable {
         self.peerName = peerName
         self.details = details
         self.amount = amount
-        self.fee = fee
+        self.fees = fees
         self.timestamp = timestamp
         self.type = type
         self.reason = reason

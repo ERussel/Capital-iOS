@@ -32,7 +32,8 @@ final class TransactionDetailsAssembly: TransactionDetailsAssemblyProtocol {
                                                     resolver: resolver,
                                                     transactionData: transactionDetails,
                                                     transactionType: transactionType,
-                                                    accessoryViewModelFactory: accessoryViewModelFactory)
+                                                    accessoryViewModelFactory: accessoryViewModelFactory,
+                                                    feeInfoFactory: resolver.feeInfoFactory)
         view.presenter = presenter
 
         return view
