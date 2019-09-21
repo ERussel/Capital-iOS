@@ -50,7 +50,9 @@ final class ConfirmationPresenter {
         }
     }
 
-    private func prepareSigleAmountViewModel(for amount: Decimal, title: String, hasIcon: Bool) -> WalletFormViewModel {
+    private func prepareSingleAmountViewModel(for amount: Decimal,
+                                              title: String,
+                                              hasIcon: Bool) -> WalletFormViewModel {
         let asset = resolver.account.assets.first {
             $0.identifier.identifier() == payload.transferInfo.asset.identifier()
         }
@@ -112,7 +114,9 @@ final class ConfirmationPresenter {
         let otherFees = fees.filter { $0.assetId.identifier() != payload.transferInfo.asset.identifier() }
 
         if mainFees.count > 0 {
-            let amountViewModel = prepareSigleAmountViewModel(for: amount, title: "Amount to send", hasIcon: false)
+            let amountViewModel = prepareSingleAmountViewModel(for: amount,
+                                                               title: "Amount to send",
+                                                               hasIcon: false)
             viewModels.append(amountViewModel)
 
             let mainFeeViewModels = mainFees.compactMap { fee in
@@ -129,13 +133,15 @@ final class ConfirmationPresenter {
                 return result + decimalFee
             }
 
-            let totalAmountViewModel = prepareSigleAmountViewModel(for: totalAmount,
-                                                                   title: "Total amount",
-                                                                   hasIcon: true)
+            let totalAmountViewModel = prepareSingleAmountViewModel(for: totalAmount,
+                                                                    title: "Total amount",
+                                                                    hasIcon: true)
 
             viewModels.append(totalAmountViewModel)
         } else {
-            let amountViewModel = prepareSigleAmountViewModel(for: amount, title: "Amount", hasIcon: true)
+            let amountViewModel = prepareSingleAmountViewModel(for: amount,
+                                                               title: "Amount",
+                                                               hasIcon: true)
             viewModels.append(amountViewModel)
         }
 

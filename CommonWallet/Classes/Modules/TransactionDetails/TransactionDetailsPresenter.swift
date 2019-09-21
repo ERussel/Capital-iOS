@@ -59,7 +59,9 @@ final class TransactionDetailsPresenter {
         }
     }
 
-    private func createSigleAmountViewModel(for amount: Decimal, title: String, hasIcon: Bool) -> WalletFormViewModel {
+    private func createSingleAmountViewModel(for amount: Decimal,
+                                             title: String,
+                                             hasIcon: Bool) -> WalletFormViewModel {
         let asset = resolver.account.assets.first {
             $0.identifier.identifier() == transactionData.assetId
         }
@@ -120,7 +122,7 @@ final class TransactionDetailsPresenter {
     private func createTotal(for amount: Decimal, fees: [AssetAmountData]) -> [WalletFormViewModel] {
         var viewModels: [WalletFormViewModel] = []
 
-        let amountViewModel = createSigleAmountViewModel(for: amount, title: "Amount sent", hasIcon: false)
+        let amountViewModel = createSingleAmountViewModel(for: amount, title: "Amount sent", hasIcon: false)
 
         viewModels.append(amountViewModel)
 
@@ -138,9 +140,9 @@ final class TransactionDetailsPresenter {
             return result + decimalFee
         }
 
-        let totalAmountViewModel = createSigleAmountViewModel(for: totalAmount,
-                                                              title: "Total amount",
-                                                              hasIcon: true)
+        let totalAmountViewModel = createSingleAmountViewModel(for: totalAmount,
+                                                               title: "Total amount",
+                                                               hasIcon: true)
 
         viewModels.append(totalAmountViewModel)
 
@@ -155,9 +157,9 @@ final class TransactionDetailsPresenter {
         let singleAmountTitle = "Amount"
 
         guard !transactionType.isIncome, let fees = transactionData.fees, fees.count > 0 else {
-            let singleAmountViewModel = createSigleAmountViewModel(for: amount,
-                                                                   title: singleAmountTitle,
-                                                                   hasIcon: true)
+            let singleAmountViewModel = createSingleAmountViewModel(for: amount,
+                                                                    title: singleAmountTitle,
+                                                                    hasIcon: true)
             return [singleAmountViewModel]
         }
 
@@ -170,7 +172,9 @@ final class TransactionDetailsPresenter {
             let totalViewModels = createTotal(for: amount, fees: amountFees)
             viewModels.append(contentsOf: totalViewModels)
         } else {
-            let singleViewModel = createSigleAmountViewModel(for: amount, title: singleAmountTitle, hasIcon: true)
+            let singleViewModel = createSingleAmountViewModel(for: amount,
+                                                              title: singleAmountTitle,
+                                                              hasIcon: true)
             viewModels.append(singleViewModel)
         }
 

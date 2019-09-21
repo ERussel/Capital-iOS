@@ -44,7 +44,7 @@ final class WithdrawConfirmationPresenter {
         self.feeInfoFactory = feeInfoFactory
     }
 
-    private func prepareSigleAmountViewModel(for amount: Decimal, title: String, hasIcon: Bool) -> WalletFormViewModel {
+    private func prepareSingleAmountViewModel(for amount: Decimal, title: String, hasIcon: Bool) -> WalletFormViewModel {
         let amountString = amountFormatter.string(from: amount as NSNumber) ?? ""
 
         let details = asset.symbol + amountString
@@ -97,15 +97,28 @@ final class WithdrawConfirmationPresenter {
     private func prepareAmountViewModels(for amount: Decimal, fees: [FeeInfo]) -> [WalletFormViewModel] {
         var viewModels: [WalletFormViewModel] = []
 
-        let amountViewModel = prepareSigleAmountViewModel(for: amount, title: "Amount to send", hasIcon: false)
+        let mainFees = fees.filter { $0.assetId.identifier() == withdrawInfo.assetId.identifier() }
+        let otherFees = fees.filter { $0.assetId.identifier() != withdrawInfo.assetId.identifier() }
 
-        viewModels.append(amountViewModel)
+        if mainFees.count > 0 {
+            let amountViewModel = prepareSingleAmountViewModel(for: amount, title: "Amount to send", hasIcon: false)
+            viewModels.append(amountViewModel)
 
-        let feeViewModels = fees.compactMap { fee in
-            return prepareFeeViewModel(for: fee, hasIcon: false)
+            let mainFeeViewModels = mainFees.compactMap { fee in
+                return prepareFeeViewModel(for: fee, hasIcon: false)
+            }
+
+            viewModels.append(contentsOf: mainFeeViewModels)
+        } else {
+            let amountViewModel = prepareSingleAmountViewModel(for: amount, title: "Amount", hasIcon: true)
+            viewModels.append(amountViewModel)
         }
 
-        viewModels.append(contentsOf: feeViewModels)
+        let otherFeeViewModels = otherFees.compactMap { fee in
+            return prepareFeeViewModel(for: fee, hasIcon: true)
+        }
+
+        viewModels.append(contentsOf: otherFeeViewModels)
 
         return viewModels
     }
@@ -123,14 +136,19 @@ final class WithdrawConfirmationPresenter {
     private func createAccessoryViewModel() -> AccessoryViewModelProtocol {
         let accessoryViewModel = AccessoryViewModel(title: "", action: "Withdraw")
 
-        guard let feeInfo = withdrawInfo.fees
-            .first(where: { $0.assetId.identifier() == asset.identifier.identifier() }),
-            let feeDecimal = Decimal(string: feeInfo.amount.value),
-            let amountDecimal = Decimal(string: withdrawInfo.amount.value) else {
+        guard let amountDecimal = Decimal(string: withdrawInfo.amount.value) else {
             return accessoryViewModel
         }
 
-        let totalAmount = amountDecimal + feeDecimal
+        let mainFees = withdrawInfo.fees.filter( { $0.assetId.identifier() == asset.identifier.identifier() })
+
+        let totalAmount = mainFees.reduce(amountDecimal) { (result, fee) in
+            guard let decimalFee = Decimal(string: fee.amount.value) else {
+                return result
+            }
+
+            return result + decimalFee
+        }
 
         guard let totalAmountString = amountFormatter.string(from: totalAmount as NSNumber) else {
             return accessoryViewModel
