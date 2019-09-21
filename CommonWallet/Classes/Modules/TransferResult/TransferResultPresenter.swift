@@ -83,32 +83,45 @@ final class TransferResultPresenter {
                                    icon: icon)
     }
 
-    private func prepareTotal(for amount: Decimal, fees: [FeeInfo]) -> [WalletFormViewModel] {
+    private func prepareAmountViewModels(for amount: Decimal, fees: [FeeInfo]) -> [WalletFormViewModel] {
         var viewModels: [WalletFormViewModel] = []
 
-        let amountViewModel = prepareSigleAmountViewModel(for: amount, title: "Amount sent", hasIcon: false)
+        let mainFees = fees.filter { $0.assetId.identifier() == transferPayload.transferInfo.asset.identifier() }
+        let otherFees = fees.filter { $0.assetId.identifier() != transferPayload.transferInfo.asset.identifier() }
 
-        viewModels.append(amountViewModel)
+        if mainFees.count > 0 {
+            let amountViewModel = prepareSigleAmountViewModel(for: amount, title: "Amount to send", hasIcon: false)
+            viewModels.append(amountViewModel)
 
-        let feeViewModels = fees.compactMap { fee in
-            return prepareFeeViewModel(for: fee, hasIcon: false)
-        }
-
-        viewModels.append(contentsOf: feeViewModels)
-
-        let totalAmount: Decimal = fees.reduce(amount) { (result, fee) in
-            guard let decimalFee = Decimal(string: fee.amount.value) else {
-                return result
+            let mainFeeViewModels = mainFees.compactMap { fee in
+                return prepareFeeViewModel(for: fee, hasIcon: false)
             }
 
-            return result + decimalFee
+            viewModels.append(contentsOf: mainFeeViewModels)
+
+            let totalAmount: Decimal = mainFees.reduce(amount) { (result, fee) in
+                guard let decimalFee = Decimal(string: fee.amount.value) else {
+                    return result
+                }
+
+                return result + decimalFee
+            }
+
+            let totalAmountViewModel = prepareSigleAmountViewModel(for: totalAmount,
+                                                                   title: "Total amount",
+                                                                   hasIcon: true)
+
+            viewModels.append(totalAmountViewModel)
+        } else {
+            let amountViewModel = prepareSigleAmountViewModel(for: amount, title: "Amount", hasIcon: true)
+            viewModels.append(amountViewModel)
         }
 
-        let totalAmountViewModel = prepareSigleAmountViewModel(for: totalAmount,
-                                                               title: "Total amount",
-                                                               hasIcon: true)
+        let otherFeeViewModels = otherFees.compactMap { fee in
+            return prepareFeeViewModel(for: fee, hasIcon: true)
+        }
 
-        viewModels.append(totalAmountViewModel)
+        viewModels.append(contentsOf: otherFeeViewModels)
 
         return viewModels
     }
@@ -129,7 +142,8 @@ final class TransferResultPresenter {
         var viewModels = [statusViewModel, timeViewModel, receiverViewModel]
 
         if let decimalAmount = Decimal(string: transferPayload.transferInfo.amount.value) {
-            let amountViewModels = prepareTotal(for: decimalAmount, fees: transferPayload.transferInfo.fees)
+            let amountViewModels = prepareAmountViewModels(for: decimalAmount,
+                                                           fees: transferPayload.transferInfo.fees)
             viewModels.append(contentsOf: amountViewModels)
         }
 

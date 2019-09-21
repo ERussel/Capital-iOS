@@ -31,8 +31,6 @@ final class WithdrawAmountViewController: AccessoryViewController {
 
     var style: WalletStyleProtocol?
 
-    lazy var layoutAnimator: BlockViewAnimatorProtocol = BlockViewAnimator()
-
     override var accessoryStyle: WalletAccessoryStyleProtocol? {
         return style?.accessoryStyle
     }
@@ -236,11 +234,8 @@ extension WithdrawAmountViewController: WithdrawAmountViewProtocol {
     }
 
     func set(accessoryFees: [AccessoryFeeViewModelProtocol]) {
-        layoutAnimator.animate(block: {
-            self.accessoryFeeContainerView.bind(viewModels: accessoryFees)
-
-            self.view.layoutIfNeeded()
-        }, completionBlock: nil)
+        accessoryFeeContainerView.bind(viewModels: accessoryFees)
+        scrollView.layoutIfNeeded()
     }
 }
 

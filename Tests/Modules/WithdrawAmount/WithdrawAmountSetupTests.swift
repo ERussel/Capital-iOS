@@ -183,6 +183,7 @@ class WithdrawAmountSetupTests: NetworkBaseTests {
                    descriptionExpectation,
                    accessoryExpectation,
                    balanceLoadedExpectation,
-                   feeLoadingCompleteExpectation], timeout: Constants.networkTimeout)
+                   feeLoadingCompleteExpectation,
+                   accessoryFeeExpectation], timeout: Constants.networkTimeout)
     }
 }

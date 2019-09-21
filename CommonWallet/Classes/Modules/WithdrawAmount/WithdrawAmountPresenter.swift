@@ -251,6 +251,7 @@ final class WithdrawAmountPresenter {
         }
 
         updateAmountViewModels()
+        updateAccessoryFeeViewModels()
 
         if let currentState = confirmationState {
             confirmationState = currentState.union(.requestedFee)

@@ -147,22 +147,6 @@ final class TransactionDetailsPresenter {
         return viewModels
     }
 
-    private func createPeerViewModel() -> WalletFormViewModel? {
-        if transactionType.backendName == WalletTransactionType.incoming.backendName {
-            return WalletFormViewModel(layoutType: .accessory,
-                                       title: "Sender",
-                                       details: transactionData.peerName)
-        }
-
-        if transactionType.backendName == WalletTransactionType.outgoing.backendName {
-            return WalletFormViewModel(layoutType: .accessory,
-                                       title: "Recipient",
-                                       details: transactionData.peerName)
-        }
-
-        return nil
-    }
-
     private func createAmountViewModels() -> [WalletFormViewModel] {
         guard let amount = Decimal(string: transactionData.amount) else {
             return []
@@ -183,7 +167,7 @@ final class TransactionDetailsPresenter {
         var viewModels: [WalletFormViewModel] = []
 
         if amountFees.count > 0 {
-            let totalViewModels = createTotal(for: amount, fees: fees)
+            let totalViewModels = createTotal(for: amount, fees: amountFees)
             viewModels.append(contentsOf: totalViewModels)
         } else {
             let singleViewModel = createSigleAmountViewModel(for: amount, title: singleAmountTitle, hasIcon: true)
@@ -208,6 +192,22 @@ final class TransactionDetailsPresenter {
                                                          firstName: firstName,
                                                          lastName: lastName,
                                                          action: "Send back")
+    }
+
+    private func createPeerViewModel() -> WalletFormViewModel? {
+        if transactionType.backendName == WalletTransactionType.incoming.backendName {
+            return WalletFormViewModel(layoutType: .accessory,
+                                       title: "Sender",
+                                       details: transactionData.peerName)
+        }
+
+        if transactionType.backendName == WalletTransactionType.outgoing.backendName {
+            return WalletFormViewModel(layoutType: .accessory,
+                                       title: "Recipient",
+                                       details: transactionData.peerName)
+        }
+
+        return nil
     }
 
     private func updateView() {

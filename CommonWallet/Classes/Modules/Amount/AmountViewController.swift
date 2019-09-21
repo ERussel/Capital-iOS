@@ -33,8 +33,6 @@ final class AmountViewController: UIViewController, AdaptiveDesignable {
     @IBOutlet private var descriptionTextView: UITextView!
     @IBOutlet private var descriptionHeight: NSLayoutConstraint!
 
-    lazy var layoutAnimator: BlockViewAnimatorProtocol = BlockViewAnimator()
-
     private var accessoryView: AccessoryViewProtocol?
     private var accessoryBottom: NSLayoutConstraint?
 
@@ -323,11 +321,8 @@ extension AmountViewController: AmountViewProtocol {
     }
 
     func set(accessoryFees: [AccessoryFeeViewModelProtocol]) {
-        layoutAnimator.animate(block: {
-            self.accessoryFeeContainerView.bind(viewModels: accessoryFees)
-
-            self.view.layoutIfNeeded()
-        }, completionBlock: nil)
+        accessoryFeeContainerView.bind(viewModels: accessoryFees)
+        scrollView.layoutIfNeeded()
     }
 }
 

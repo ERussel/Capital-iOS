@@ -9,10 +9,22 @@ final class AccessoryFeeContainerView: UIView {
         }
     }
 
+    override init(frame: CGRect) {
+        super.init(frame: frame)
+
+        configure()
+    }
+
+    required init?(coder aDecoder: NSCoder) {
+        super.init(coder: aDecoder)
+
+        configure()
+    }
+
     override var intrinsicContentSize: CGSize {
         let totalHeight = feeViews.reduce(CGFloat(0.0)) { (result, view) in
             guard let height = view.constraints
-                .first(where: {$0.firstAttribute == .height})?.constant else {
+                .first(where: { $0.firstAttribute == .height })?.constant else {
                 return result
             }
 
@@ -20,6 +32,10 @@ final class AccessoryFeeContainerView: UIView {
         }
 
         return CGSize(width: UIView.noIntrinsicMetric, height: totalHeight)
+    }
+
+    private func configure() {
+        backgroundColor = UIColor.clear
     }
 
     func bind(viewModels: [AccessoryFeeViewModelProtocol]) {
@@ -66,7 +82,9 @@ final class AccessoryFeeContainerView: UIView {
                 feeView.topAnchor.constraint(equalTo: topAnchor).isActive = true
             }
 
-            feeView.heightAnchor.constraint(equalToConstant: feeView.frame.height)
+            feeView.heightAnchor.constraint(equalToConstant: feeView.frame.height).isActive = true
+
+            feeViews.append(feeView)
         }
     }
 

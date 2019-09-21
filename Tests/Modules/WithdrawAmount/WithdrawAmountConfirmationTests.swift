@@ -203,7 +203,8 @@ class WithdrawAmountConfirmationTests: NetworkBaseTests {
                        descriptionExpectation,
                        accessoryExpectation,
                        balanceLoadedExpectation,
-                       feeLoadedExpectation], timeout: Constants.networkTimeout)
+                       feeLoadedExpectation,
+                       accessoryFeeLoadedExpectation], timeout: Constants.networkTimeout)
 
             XCTAssertNil(presenter.confirmationState)
 
