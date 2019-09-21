@@ -93,6 +93,8 @@ class AmountTests: NetworkBaseTests {
             let balanceExpectation = XCTestExpectation()
             let feeLoadingCompleteExpectation = XCTestExpectation()
 
+            let accessoryFeeLoadingExpectation = XCTestExpectation()
+
             var feeViewModel: FeeViewModelProtocol?
 
             var amountViewModel: AmountInputViewModelProtocol? = nil
@@ -123,6 +125,10 @@ class AmountTests: NetworkBaseTests {
                     viewModel.observable.add(observer: feeViewModelObserver)
 
                     feeExpectation.fulfill()
+                }
+
+                when(stub).set(accessoryFees: any()).then { _ in
+                    accessoryFeeLoadingExpectation.fulfill()
                 }
 
                 if expectsFeeFailure {

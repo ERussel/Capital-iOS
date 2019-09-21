@@ -13,26 +13,29 @@ class FeeCalculationTests: XCTestCase {
         do {
             let feeFactory = FeeCalculationFactory()
 
-            let assetId = try IRAssetIdFactory.asset(withIdentifier: createRandomAssetId())
+            let account = try createRandomAccountSettings(for: 1)
+            let asset = account.assets[0]
 
-            let validValues: [Decimal] = [0, 10, 1e+6]
+            let validValues: [String] = ["0", "10", "1e+6"]
 
             for value in validValues {
-                let transferCalculator = try feeFactory.createTransferFeeStrategy(for: FeeType.fixed.rawValue,
-                                                                                  assetId: assetId,
-                                                                                  parameters: [value])
+                let feeData = FeeData(assetId: asset.identifier.identifier(),
+                                      type: FeeType.fixed.rawValue,
+                                      parameters: [value])
+                let transferCalculator = try feeFactory.createTransferFeeStrategy(for: asset, fee: feeData)
+
+                let expectedValue = Decimal(string: value)!
 
                 let transferFee = try transferCalculator.calculate(for: 1.2)
-                XCTAssertEqual(transferFee, value)
+                XCTAssertEqual(transferFee, expectedValue)
 
                 let option = createRandomWithdrawOption()
-                let withdrawCalculator = try feeFactory.createWithdrawFeeStrategy(for: FeeType.fixed.rawValue,
-                                                                                  assetId: assetId,
-                                                                                  optionId: option.identifier,
-                                                                                  parameters: [value])
+                let withdrawCalculator = try feeFactory.createWithdrawFeeStrategy(for: asset,
+                                                                                  option: option,
+                                                                                  fee: feeData)
 
                 let withdrawFee = try withdrawCalculator.calculate(for: 1.2)
-                XCTAssertEqual(withdrawFee, value)
+                XCTAssertEqual(withdrawFee, expectedValue)
             }
 
         } catch {
@@ -44,27 +47,32 @@ class FeeCalculationTests: XCTestCase {
         do {
             let feeFactory = FeeCalculationFactory()
 
-            let assetId = try IRAssetIdFactory.asset(withIdentifier: createRandomAssetId())
+            let account = try createRandomAccountSettings(for: 1)
+            let asset = account.assets[0]
 
-            let validValues: [Decimal] = [0, 10, 1e+6]
+            let validValues: [String] = ["0", "10", "1e+6"]
             let amount: Decimal = 1.2
 
             for value in validValues {
-                let transferCalculator = try feeFactory.createTransferFeeStrategy(for: FeeType.factor.rawValue,
-                                                                                  assetId: assetId,
-                                                                                  parameters: [value])
+                let feeData = FeeData(assetId: asset.identifier.identifier(),
+                                      type: FeeType.factor.rawValue,
+                                      parameters: [value])
+
+                let transferCalculator = try feeFactory.createTransferFeeStrategy(for: asset,
+                                                                                  fee: feeData)
+
+                let decimalValue = Decimal(string: value)!
 
                 let transferFee = try transferCalculator.calculate(for: 1.2)
-                XCTAssertEqual(transferFee, amount * value)
+                XCTAssertEqual(transferFee, amount * decimalValue)
 
                 let option = createRandomWithdrawOption()
-                let withdrawCalculator = try feeFactory.createWithdrawFeeStrategy(for: FeeType.factor.rawValue,
-                                                                                  assetId: assetId,
-                                                                                  optionId: option.identifier,
-                                                                                  parameters: [value])
+                let withdrawCalculator = try feeFactory.createWithdrawFeeStrategy(for: asset,
+                                                                                  option: option,
+                                                                                  fee: feeData)
 
                 let withdrawFee = try withdrawCalculator.calculate(for: 1.2)
-                XCTAssertEqual(withdrawFee, amount * value)
+                XCTAssertEqual(withdrawFee, amount * decimalValue)
             }
 
         } catch {
@@ -76,11 +84,14 @@ class FeeCalculationTests: XCTestCase {
         do {
             let feeFactory = FeeCalculationFactory()
 
-            let assetId = try IRAssetIdFactory.asset(withIdentifier: createRandomAssetId())
+            let account = try createRandomAccountSettings(for: 1)
+            let asset = account.assets[0]
 
-            _ = try feeFactory.createTransferFeeStrategy(for: FeeType.fixed.rawValue,
-                                                         assetId: assetId,
-                                                         parameters: [])
+            let feeData = FeeData(assetId: asset.identifier.identifier(),
+                                  type: FeeType.fixed.rawValue,
+                                  parameters: [])
+
+            _ = try feeFactory.createTransferFeeStrategy(for: asset, fee: feeData)
                 .calculate(for: 1.2)
         } catch FeeCalculationFactoryError.invalidParameters {
             // expect this error
@@ -93,13 +104,18 @@ class FeeCalculationTests: XCTestCase {
         do {
             let feeFactory = FeeCalculationFactory()
 
-            let assetId = try IRAssetIdFactory.asset(withIdentifier: createRandomAssetId())
+            let account = try createRandomAccountSettings(for: 1)
+            let asset = account.assets[0]
+
             let option = createRandomWithdrawOption()
 
-            _ = try feeFactory.createWithdrawFeeStrategy(for: FeeType.fixed.rawValue,
-                                                         assetId: assetId,
-                                                         optionId: option.identifier,
-                                                         parameters: [])
+            let feeData = FeeData(assetId: asset.identifier.identifier(),
+                                  type: FeeType.fixed.rawValue,
+                                  parameters: [])
+
+            _ = try feeFactory.createWithdrawFeeStrategy(for: asset,
+                                                         option: option,
+                                                         fee: feeData)
                 .calculate(for: 1.2)
         } catch FeeCalculationFactoryError.invalidParameters {
             // expect this error

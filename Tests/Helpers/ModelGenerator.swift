@@ -33,38 +33,36 @@ func createRandomTransactionHash() throws -> Data {
     return try createRandomData(with: 32)
 }
 
-func createRandomTransferInfo() throws -> TransferInfo {
+func createRandomTransferInfo(differentFeesCount: Int = 1) throws -> TransferInfo {
     let source = try IRAccountIdFactory.account(withIdentifier: try createRandomAccountId())
     let destination = try IRAccountIdFactory.account(withIdentifier: try createRandomAccountId())
     let amount = try IRAmountFactory.amount(fromUnsignedInteger: UInt.random(in: 1...1000))
     let asset = try IRAssetIdFactory.asset(withIdentifier: createRandomAssetId())
     let details = UUID().uuidString
-    let feeAccountId: IRAccountId = try IRAccountIdFactory.account(withIdentifier: createRandomAccountId())
-    let fee = try IRAmountFactory.amount(fromUnsignedInteger: UInt.random(in: 1...10000))
+
+    let fees = try (0..<differentFeesCount).map { _ in try createRandomFeeInfo() }
 
     return TransferInfo(source: source,
                         destination: destination,
                         amount: amount,
                         asset: asset,
                         details: details,
-                        feeAccountId: [nil, feeAccountId].randomElement()!,
-                        fee: [nil, fee].randomElement()!)
+                        fees: fees)
 }
 
-func createRandomWithdrawInfo() throws -> WithdrawInfo {
+func createRandomWithdrawInfo(differentFeesCount: Int = 1) throws -> WithdrawInfo {
     let destinationAccount = try IRAccountIdFactory.account(withIdentifier: try createRandomAccountId())
-    let feeAccount = try IRAccountIdFactory.account(withIdentifier: try createRandomAccountId())
     let amount = try IRAmountFactory.amount(fromUnsignedInteger: UInt.random(in: 1...1000))
-    let fee = try IRAmountFactory.amount(fromUnsignedInteger: UInt.random(in: 1...1000))
     let asset = try IRAssetIdFactory.asset(withIdentifier: createRandomAssetId())
     let details = UUID().uuidString
+
+    let fees = try (0..<differentFeesCount).map { _ in try createRandomFeeInfo() }
 
     return WithdrawInfo(destinationAccountId: destinationAccount,
                         assetId: asset,
                         amount: amount,
                         details: details,
-                        feeAccountId: feeAccount,
-                        fee: fee)
+                        fees: fees)
 }
 
 func createRandomReceiveInfo() throws -> ReceiveInfo {
@@ -79,13 +77,15 @@ func createRandomReceiveInfo() throws -> ReceiveInfo {
                        details: details)
 }
 
-func createRandomAssetTransactionData(includeFee: Bool = true) throws -> AssetTransactionData {
+func createRandomAssetTransactionData(differentFeesCount: Int = 1) throws -> AssetTransactionData {
     let transactionId = try createRandomTransactionHash()
     let status: AssetTransactionStatus = [.commited, .pending, .rejected].randomElement()!
     let assetId = try createRandomAssetId()
     let amount = UInt.random(in: 0...1000)
-    let fee: String? = includeFee ? NSNumber(value: UInt.random(in: 0...1000)).stringValue : nil
     let reason: String? = status == .rejected ? UUID().uuidString : nil
+
+    let fees = try (0..<differentFeesCount).map { _ in try createRandomAssetAmountData() }
+
     return AssetTransactionData(transactionId: (transactionId as NSData).toHexString(),
                                 status: status,
                                 assetId: assetId,
@@ -93,7 +93,7 @@ func createRandomAssetTransactionData(includeFee: Bool = true) throws -> AssetTr
                                 peerName: UUID().uuidString,
                                 details: UUID().uuidString,
                                 amount: NSNumber(value: amount).stringValue,
-                                fee: fee,
+                                fees: fees,
                                 timestamp: Int64(Date().timeIntervalSince1970),
                                 type: WalletTransactionType.required.randomElement()!.backendName,
                                 reason: reason)
@@ -111,4 +111,18 @@ func createRandomWithdrawMetadataInfo() throws -> WithdrawMetadataInfo {
     let option = UUID().uuidString
 
     return WithdrawMetadataInfo(assetId: assetId, option: option)
+}
+
+func createRandomFeeInfo() throws -> FeeInfo {
+    let assetId = try IRAssetIdFactory.asset(withIdentifier: createRandomAssetId())
+    let accountId = try IRAccountIdFactory.account(withIdentifier: createRandomAccountId())
+    let amount = try IRAmountFactory.amount(fromUnsignedInteger: UInt.random(in: 1...1000))
+
+    return FeeInfo(assetId: assetId, amount: amount, accountId: accountId)
+}
+
+func createRandomAssetAmountData() throws -> AssetAmountData {
+    let assetId = try createRandomAssetId()
+    let amount = NSNumber(value: UInt.random(in: 1...1000)).stringValue
+    return AssetAmountData(assetId: assetId, amount: amount)
 }

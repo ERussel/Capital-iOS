@@ -99,6 +99,11 @@ class WithdrawAmountSetupTests: NetworkBaseTests {
         let accessoryExpectation = XCTestExpectation()
         let balanceLoadedExpectation = XCTestExpectation()
         let feeLoadingCompleteExpectation = XCTestExpectation()
+        let accessoryFeeExpectation = XCTestExpectation()
+
+        if !expectsFeeFailure {
+            accessoryFeeExpectation.expectedFulfillmentCount = 2
+        }
 
         var feeViewModel: FeeViewModelProtocol?
 
@@ -129,6 +134,10 @@ class WithdrawAmountSetupTests: NetworkBaseTests {
 
             when(stub).didChange(accessoryViewModel: any()).then { _ in
                 accessoryExpectation.fulfill()
+            }
+
+            when(stub).set(accessoryFees: any()).then { _ in
+                accessoryFeeExpectation.fulfill()
             }
 
             if expectsFeeFailure {

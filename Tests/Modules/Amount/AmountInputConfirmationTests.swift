@@ -79,6 +79,9 @@ class AmountInputConfirmationTests: NetworkBaseTests {
             let feeLoadedExpectation = XCTestExpectation()
             feeLoadedExpectation.expectedFulfillmentCount = 2
 
+            let accessoryFeeLoadedExpectation = XCTestExpectation()
+            accessoryFeeLoadedExpectation.expectedFulfillmentCount = 2
+
             var amountViewModel: AmountInputViewModelProtocol?
             var descriptionViewModel: DescriptionInputViewModelProtocol?
 
@@ -104,6 +107,10 @@ class AmountInputConfirmationTests: NetworkBaseTests {
                     descriptionViewModel = viewModel
 
                     descriptionExpectation.fulfill()
+                }
+
+                when(stub).set(accessoryFees: any()).then { _ in
+                    accessoryFeeLoadedExpectation.fulfill()
                 }
 
                 when(stub).set(accessoryViewModel: any()).then { _ in
@@ -170,14 +177,14 @@ class AmountInputConfirmationTests: NetworkBaseTests {
 
             presenter.setup()
 
-            wait(for: [assetExpectation,
-                       amountExpectation,
-                       feeExpectation,
-                       descriptionExpectation,
-                       balanceExpectation,
-                       accessoryExpectation,
-                       feeLoadedExpectation],
-                 timeout: Constants.networkTimeout)
+            wait(for: [assetExpectation], timeout: Constants.networkTimeout)
+            wait(for: [amountExpectation], timeout: Constants.networkTimeout)
+            wait(for: [feeExpectation], timeout: Constants.networkTimeout)
+            wait(for: [descriptionExpectation], timeout: Constants.networkTimeout)
+            wait(for: [balanceExpectation], timeout: Constants.networkTimeout)
+            wait(for: [accessoryExpectation], timeout: Constants.networkTimeout)
+            wait(for: [feeLoadedExpectation], timeout: Constants.networkTimeout)
+            wait(for: [accessoryFeeLoadedExpectation], timeout: Constants.networkTimeout)
 
             // then
 

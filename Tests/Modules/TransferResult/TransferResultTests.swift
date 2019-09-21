@@ -52,6 +52,7 @@ class TransferResultTests: NetworkBaseTests {
                 when(stub).amountFormatter.get.thenReturn(NumberFormatter())
                 when(stub).statusDateFormatter.get.thenReturn(DateFormatter())
                 when(stub).style.get.thenReturn(WalletStyle())
+                when(stub).account.get.thenReturn(accountSettings)
             }
 
             presenter.setup()

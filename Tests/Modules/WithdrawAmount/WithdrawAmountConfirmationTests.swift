@@ -102,6 +102,12 @@ class WithdrawAmountConfirmationTests: NetworkBaseTests {
             let feeLoadedExpectation = XCTestExpectation()
             feeLoadedExpectation.expectedFulfillmentCount = 2
 
+            let accessoryFeeLoadedExpectation = XCTestExpectation()
+
+            if expectsSuccess {
+                accessoryFeeLoadedExpectation.expectedFulfillmentCount = 2
+            }
+
             var amountViewModel: AmountInputViewModelProtocol?
             var descriptionViewModel: DescriptionInputViewModelProtocol?
 
@@ -132,6 +138,10 @@ class WithdrawAmountConfirmationTests: NetworkBaseTests {
                     descriptionViewModel = viewModel
 
                     descriptionExpectation.fulfill()
+                }
+
+                when(stub).set(accessoryFees: any()).then { _ in
+                    accessoryFeeLoadedExpectation.fulfill()
                 }
 
                 when(stub).didChange(accessoryViewModel: any()).then { _ in
