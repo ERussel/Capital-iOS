@@ -19,7 +19,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
         let demoListViewController = DemoListViewController(nibName: "DemoListViewController", bundle: nil)
         demoListViewController.title = "Demo List"
-        demoListViewController.demoList = [DefaultDemo(), CommandDecoratorDemo()]
+        demoListViewController.demoList = [DefaultDemo(), CommandDecoratorDemo(), SoraDemo()]
 
         let navigationController = UINavigationController(rootViewController: demoListViewController)
 

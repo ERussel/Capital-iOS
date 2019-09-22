@@ -14,6 +14,7 @@
 		607FACDD1AFB9204008FA782 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 607FACDC1AFB9204008FA782 /* Images.xcassets */; };
 		607FACE01AFB9204008FA782 /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 607FACDE1AFB9204008FA782 /* LaunchScreen.xib */; };
 		840932422344C9A60013C871 /* HistoryViewModelFactoryTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 840932412344C9A60013C871 /* HistoryViewModelFactoryTests.swift */; };
+		8406372623375F2200D63496 /* SoraDemo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8406372523375F2200D63496 /* SoraDemo.swift */; };
 		84146E2222B0339F00F18F1C /* CompondDateFormatterTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84146E2122B0339F00F18F1C /* CompondDateFormatterTests.swift */; };
 		841550E2228D50DA001F18A7 /* transferFailResponse.json in Resources */ = {isa = PBXBuildFile; fileRef = 841550E1228D50DA001F18A7 /* transferFailResponse.json */; };
 		841550E5228D7751001F18A7 /* DescriptionInputViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 841550E4228D7751001F18A7 /* DescriptionInputViewModelTests.swift */; };
@@ -37,6 +38,17 @@
 		844D556922A9315500BA99EF /* AccessoryViewFactoryTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 844D556822A9315500BA99EF /* AccessoryViewFactoryTests.swift */; };
 		845D1DA022B539CC000641F9 /* irohaErrorResponse.json in Resources */ = {isa = PBXBuildFile; fileRef = 845D1D9F22B539CC000641F9 /* irohaErrorResponse.json */; };
 		847527382360790E0028D871 /* AmountInputViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 847527372360790E0028D871 /* AmountInputViewModelTests.swift */; };
+		8473567A233766FD00103EF1 /* SoraNetworkMock.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84735679233766FD00103EF1 /* SoraNetworkMock.swift */; };
+		8473568F2337679D00103EF1 /* soraHistoryResponse.json in Resources */ = {isa = PBXBuildFile; fileRef = 8473567F2337679D00103EF1 /* soraHistoryResponse.json */; };
+		847356902337679D00103EF1 /* soraSearchResponse.json in Resources */ = {isa = PBXBuildFile; fileRef = 847356802337679D00103EF1 /* soraSearchResponse.json */; };
+		847356932337679D00103EF1 /* soraTransferMetadataResponse.json in Resources */ = {isa = PBXBuildFile; fileRef = 847356832337679D00103EF1 /* soraTransferMetadataResponse.json */; };
+		847356942337679D00103EF1 /* soraWithdrawalMetadataResponse.json in Resources */ = {isa = PBXBuildFile; fileRef = 847356842337679D00103EF1 /* soraWithdrawalMetadataResponse.json */; };
+		847356982337679D00103EF1 /* soraContactsResponse.json in Resources */ = {isa = PBXBuildFile; fileRef = 847356882337679D00103EF1 /* soraContactsResponse.json */; };
+		8473569A2337679D00103EF1 /* soraAccounBalanceResponse.json in Resources */ = {isa = PBXBuildFile; fileRef = 8473568A2337679D00103EF1 /* soraAccounBalanceResponse.json */; };
+		8473569D23376DB100103EF1 /* SoraDemo+Mock.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8473569C23376DB100103EF1 /* SoraDemo+Mock.swift */; };
+		8473569F233771B400103EF1 /* SoraFeeInfoFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8473569E233771B400103EF1 /* SoraFeeInfoFactory.swift */; };
+		847356A22337725300103EF1 /* String+Sora.swift in Sources */ = {isa = PBXBuildFile; fileRef = 847356A12337725300103EF1 /* String+Sora.swift */; };
+		847356A42337738400103EF1 /* SoraAccountShareFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 847356A32337738400103EF1 /* SoraAccountShareFactory.swift */; };
 		84752C5222A5BCA30068188B /* DashboardReloadableTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84752C5122A5BCA30068188B /* DashboardReloadableTests.swift */; };
 		84752C5422A6A7F90068188B /* AmountInputConfirmationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84752C5322A6A7F90068188B /* AmountInputConfirmationTests.swift */; };
 		84752C5622A7F6490068188B /* searchInvoiceResponse.json in Resources */ = {isa = PBXBuildFile; fileRef = 84752C5522A7F6490068188B /* searchInvoiceResponse.json */; };
@@ -145,6 +157,7 @@
 		607FACEA1AFB9204008FA782 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		72407FA5F4ADF13CE0BE1268 /* LICENSE */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; name = LICENSE; path = ../LICENSE; sourceTree = "<group>"; };
 		840932412344C9A60013C871 /* HistoryViewModelFactoryTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HistoryViewModelFactoryTests.swift; sourceTree = "<group>"; };
+		8406372523375F2200D63496 /* SoraDemo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SoraDemo.swift; sourceTree = "<group>"; };
 		84146E2122B0339F00F18F1C /* CompondDateFormatterTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CompondDateFormatterTests.swift; sourceTree = "<group>"; };
 		841550E1228D50DA001F18A7 /* transferFailResponse.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = transferFailResponse.json; sourceTree = "<group>"; };
 		841550E4228D7751001F18A7 /* DescriptionInputViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DescriptionInputViewModelTests.swift; sourceTree = "<group>"; };
@@ -167,6 +180,17 @@
 		844D556822A9315500BA99EF /* AccessoryViewFactoryTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccessoryViewFactoryTests.swift; sourceTree = "<group>"; };
 		845D1D9F22B539CC000641F9 /* irohaErrorResponse.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = irohaErrorResponse.json; sourceTree = "<group>"; };
 		847527372360790E0028D871 /* AmountInputViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AmountInputViewModelTests.swift; sourceTree = "<group>"; };
+		84735679233766FD00103EF1 /* SoraNetworkMock.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SoraNetworkMock.swift; sourceTree = "<group>"; };
+		8473567F2337679D00103EF1 /* soraHistoryResponse.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = soraHistoryResponse.json; sourceTree = "<group>"; };
+		847356802337679D00103EF1 /* soraSearchResponse.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = soraSearchResponse.json; sourceTree = "<group>"; };
+		847356832337679D00103EF1 /* soraTransferMetadataResponse.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = soraTransferMetadataResponse.json; sourceTree = "<group>"; };
+		847356842337679D00103EF1 /* soraWithdrawalMetadataResponse.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = soraWithdrawalMetadataResponse.json; sourceTree = "<group>"; };
+		847356882337679D00103EF1 /* soraContactsResponse.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = soraContactsResponse.json; sourceTree = "<group>"; };
+		8473568A2337679D00103EF1 /* soraAccounBalanceResponse.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = soraAccounBalanceResponse.json; sourceTree = "<group>"; };
+		8473569C23376DB100103EF1 /* SoraDemo+Mock.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SoraDemo+Mock.swift"; sourceTree = "<group>"; };
+		8473569E233771B400103EF1 /* SoraFeeInfoFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SoraFeeInfoFactory.swift; sourceTree = "<group>"; };
+		847356A12337725300103EF1 /* String+Sora.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+Sora.swift"; sourceTree = "<group>"; };
+		847356A32337738400103EF1 /* SoraAccountShareFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SoraAccountShareFactory.swift; sourceTree = "<group>"; };
 		84752C5122A5BCA30068188B /* DashboardReloadableTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DashboardReloadableTests.swift; sourceTree = "<group>"; };
 		84752C5322A6A7F90068188B /* AmountInputConfirmationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AmountInputConfirmationTests.swift; sourceTree = "<group>"; };
 		84752C5522A7F6490068188B /* searchInvoiceResponse.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = searchInvoiceResponse.json; sourceTree = "<group>"; };
@@ -347,6 +371,20 @@
 			name = "Podspec Metadata";
 			sourceTree = "<group>";
 		};
+		8406372423375F0200D63496 /* Sora */ = {
+			isa = PBXGroup;
+			children = (
+				847356A02337724500103EF1 /* Helpers */,
+				8473567B2337670600103EF1 /* Resources */,
+				8406372523375F2200D63496 /* SoraDemo.swift */,
+				84735679233766FD00103EF1 /* SoraNetworkMock.swift */,
+				8473569C23376DB100103EF1 /* SoraDemo+Mock.swift */,
+				8473569E233771B400103EF1 /* SoraFeeInfoFactory.swift */,
+				847356A32337738400103EF1 /* SoraAccountShareFactory.swift */,
+			);
+			path = Sora;
+			sourceTree = "<group>";
+		};
 		84146E2022B0339F00F18F1C /* Helpers */ = {
 			isa = PBXGroup;
 			children = (
@@ -515,6 +553,27 @@
 			path = View;
 			sourceTree = "<group>";
 		};
+		8473567B2337670600103EF1 /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				8473568A2337679D00103EF1 /* soraAccounBalanceResponse.json */,
+				847356882337679D00103EF1 /* soraContactsResponse.json */,
+				8473567F2337679D00103EF1 /* soraHistoryResponse.json */,
+				847356802337679D00103EF1 /* soraSearchResponse.json */,
+				847356832337679D00103EF1 /* soraTransferMetadataResponse.json */,
+				847356842337679D00103EF1 /* soraWithdrawalMetadataResponse.json */,
+			);
+			path = Resources;
+			sourceTree = "<group>";
+		};
+		847356A02337724500103EF1 /* Helpers */ = {
+			isa = PBXGroup;
+			children = (
+				847356A12337725300103EF1 /* String+Sora.swift */,
+			);
+			path = Helpers;
+			sourceTree = "<group>";
+		};
 		84752C4E22A5BC6F0068188B /* Dashboard */ = {
 			isa = PBXGroup;
 			children = (
@@ -625,6 +684,7 @@
 		84C180572253ACF400F19858 /* Demo */ = {
 			isa = PBXGroup;
 			children = (
+				8406372423375F0200D63496 /* Sora */,
 				84D8D9A822F730CF00C9B9C7 /* CommandDecorator */,
 				84D8D9A722F730BF00C9B9C7 /* Default */,
 				84C180582253AD0800F19858 /* DemoProtocol.swift */,
@@ -834,9 +894,11 @@
 			files = (
 				848B6EBA224D5A1100E8A3C9 /* historyResponse.json in Resources */,
 				848B6EB4224D5A1100E8A3C9 /* successResultResponse.json in Resources */,
+				8473568F2337679D00103EF1 /* soraHistoryResponse.json in Resources */,
 				8B8B4C8122AEC4C500D77443 /* sora-ExtraBold.otf in Resources */,
 				8B8B4C8022AEC4C500D77443 /* sora-Bold.otf in Resources */,
 				8B5E81D42268BD5B001DB674 /* searchEmptyResponse.json in Resources */,
+				8473569A2337679D00103EF1 /* soraAccounBalanceResponse.json in Resources */,
 				84AF3DD92297D442008725C3 /* accountBalanceSingleResponse.json in Resources */,
 				8425DB8C228160DC008A8B6A /* InfoPlist.strings in Resources */,
 				84752C5622A7F6490068188B /* searchInvoiceResponse.json in Resources */,
@@ -851,8 +913,12 @@
 				84AFF10C22B291550062FD3D /* historySmallResponse.json in Resources */,
 				8B8B4C7F22AEC4C500D77443 /* sora-Regular.otf in Resources */,
 				8B8B4C8222AEC4C500D77443 /* sora-SemiBold.otf in Resources */,
+				847356932337679D00103EF1 /* soraTransferMetadataResponse.json in Resources */,
 				8B7DC34022B6F952004BFE79 /* historyFilteredResponse.json in Resources */,
+				847356902337679D00103EF1 /* soraSearchResponse.json in Resources */,
+				847356942337679D00103EF1 /* soraWithdrawalMetadataResponse.json in Resources */,
 				848B6EB6224D5A1100E8A3C9 /* searchResponse.json in Resources */,
+				847356982337679D00103EF1 /* soraContactsResponse.json in Resources */,
 				607FACDD1AFB9204008FA782 /* Images.xcassets in Resources */,
 				841550E2228D50DA001F18A7 /* transferFailResponse.json in Resources */,
 				84F622BB2310016D00D5D6BA /* feeNotAvailable.json in Resources */,
@@ -1076,10 +1142,16 @@
 				848B6EBE224D5A1100E8A3C9 /* ServiceMock.swift in Sources */,
 				84D8D9A622F72C8B00C9B9C7 /* CommandDecoratorDemo.swift in Sources */,
 				607FACD81AFB9204008FA782 /* DemoListViewController.swift in Sources */,
+				8473569F233771B400103EF1 /* SoraFeeInfoFactory.swift in Sources */,
+				8406372623375F2200D63496 /* SoraDemo.swift in Sources */,
+				847356A42337738400103EF1 /* SoraAccountShareFactory.swift in Sources */,
 				84C1806922551D4000F19858 /* DemoHeaderCell.swift in Sources */,
 				848B6EC2224D5A1100E8A3C9 /* NetworkMockManager.swift in Sources */,
 				848B6EC0224D5A1100E8A3C9 /* BaseServiceMock.swift in Sources */,
+				8473569D23376DB100103EF1 /* SoraDemo+Mock.swift in Sources */,
 				84C1805B2253AD8600F19858 /* DefaultDemo.swift in Sources */,
+				8473567A233766FD00103EF1 /* SoraNetworkMock.swift in Sources */,
+				847356A22337725300103EF1 /* String+Sora.swift in Sources */,
 				84D8D9AC22F7315900C9B9C7 /* DialogCommandDecorator.swift in Sources */,
 				84D8D9AA22F730F300C9B9C7 /* DialogCommandDecoratorFactory.swift in Sources */,
 				84C1806D22551E0600F19858 /* DemoHeaderViewModel.swift in Sources */,

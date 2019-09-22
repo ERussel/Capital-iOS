@@ -1,3 +1,8 @@
+/**
+* Copyright Soramitsu Co., Ltd. All Rights Reserved.
+* SPDX-License-Identifier: GPL-3.0
+*/
+
 import Foundation
 
 func calculateFee(for factory: FeeCalculationFactoryProtocol,
@@ -29,15 +34,19 @@ func checkAmountConstraints(for factory: FeeCalculationFactoryProtocol,
                             balances: [BalanceData],
                             fees: [FeeData],
                             amount: Decimal) throws {
-    if let feeData = fees.first(where: { $0.assetId == sourceAsset.identifier.identifier() }) {
-        let feeAmount = try calculateFee(for: factory, sourceAsset: sourceAsset, fee: feeData, amount: amount)
+    var totalAmount = amount
 
-        let totalAmount = amount + feeAmount
+    let mainFees = fees.filter({ $0.assetId == sourceAsset.identifier.identifier() })
+    let otherFees = fees.filter({ $0.assetId != sourceAsset.identifier.identifier() })
 
-        try checkAmountConstraints(for: totalAmount, assetId: feeData.assetId, balances: balances)
+    try mainFees.forEach { fee in
+        let feeAmount = try calculateFee(for: factory, sourceAsset: sourceAsset, fee: fee, amount: amount)
+        totalAmount += feeAmount
     }
 
-    for feeData in fees.filter({ $0.assetId != sourceAsset.identifier.identifier() }) {
+    try checkAmountConstraints(for: totalAmount, assetId: sourceAsset.identifier.identifier(), balances: balances)
+
+    for feeData in otherFees {
         let feeAmount = try calculateFee(for: factory, sourceAsset: sourceAsset, fee: feeData, amount: amount)
         try checkAmountConstraints(for: feeAmount, assetId: feeData.assetId, balances: balances)
     }

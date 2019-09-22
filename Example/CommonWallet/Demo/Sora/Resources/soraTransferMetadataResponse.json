@@ -1,0 +1,1 @@
+{"status":{"code":"OK","message":"Success"}, "fees": [{"assetId":"xor#sora", "accountId": "notary@notary", "type": "FIXED", "parameters": ["0.1"]}]}

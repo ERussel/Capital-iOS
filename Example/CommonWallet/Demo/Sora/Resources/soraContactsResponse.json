@@ -1,0 +1,38 @@
+{
+    "status": {
+        "message": "Success",
+        "code": "OK"
+    },
+    "results": [
+        {
+            "accountId": "anton@sora",
+            "firstName": "Anton",
+            "lastName": "K"
+        },
+        {
+            "accountId": "john@sora",
+            "firstName": "John",
+            "lastName": "Gold"
+        },
+        {
+            "accountId": "julio@sora",
+            "firstName": "Julio",
+            "lastName": "Johnes"
+        },
+        {
+            "accountId": "smith@sora",
+            "firstName": "John",
+            "lastName": "Smith"
+        },
+        {
+            "accountId": "highlander@sora",
+            "firstName": "Juan Sánchez Villa-Lobos",
+            "lastName": "Ramírez"
+        },
+        {
+            "accountId": "multipass@sora",
+            "firstName": "Korben",
+            "lastName": "Dallas"
+        }
+    ]
+}

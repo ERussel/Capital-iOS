@@ -379,7 +379,7 @@ final class AmountPresenter {
             let message: String
 
             if let asset = account.asset(for: assetId) {
-                message = "Sorry, you don't have enough \(asset.symbol) asset to transfer specified amount."
+                message = "Sorry, you don't have enough \(asset.details) asset to transfer specified amount."
             } else {
                 message = "Sorry, you don't have enough funds to transfer specified amount."
             }
