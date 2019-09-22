@@ -49,6 +49,11 @@
 		8473569F233771B400103EF1 /* SoraFeeInfoFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8473569E233771B400103EF1 /* SoraFeeInfoFactory.swift */; };
 		847356A22337725300103EF1 /* String+Sora.swift in Sources */ = {isa = PBXBuildFile; fileRef = 847356A12337725300103EF1 /* String+Sora.swift */; };
 		847356A42337738400103EF1 /* SoraAccountShareFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 847356A32337738400103EF1 /* SoraAccountShareFactory.swift */; };
+		847356A72337891900103EF1 /* SoraActionsCollectionViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 847356A62337891900103EF1 /* SoraActionsCollectionViewCell.xib */; };
+		847356A923378A2900103EF1 /* SoraActionsCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 847356A823378A2900103EF1 /* SoraActionsCollectionViewCell.swift */; };
+		847356AB2337920900103EF1 /* SoraActionsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 847356AA2337920900103EF1 /* SoraActionsViewModel.swift */; };
+		847356AD2337945800103EF1 /* SoraActionViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 847356AC2337945800103EF1 /* SoraActionViewModel.swift */; };
+		847356B12337A79500103EF1 /* SoraAccountListViewModelFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 847356B02337A79500103EF1 /* SoraAccountListViewModelFactory.swift */; };
 		84752C5222A5BCA30068188B /* DashboardReloadableTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84752C5122A5BCA30068188B /* DashboardReloadableTests.swift */; };
 		84752C5422A6A7F90068188B /* AmountInputConfirmationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84752C5322A6A7F90068188B /* AmountInputConfirmationTests.swift */; };
 		84752C5622A7F6490068188B /* searchInvoiceResponse.json in Resources */ = {isa = PBXBuildFile; fileRef = 84752C5522A7F6490068188B /* searchInvoiceResponse.json */; };
@@ -58,6 +63,7 @@
 		8481A58522FC537C0056D3D4 /* WalletDefaultInputValidatorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8481A58422FC537C0056D3D4 /* WalletDefaultInputValidatorTests.swift */; };
 		84896599225397F100EBAC6D /* CommonWalletBuilderTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84896598225397F100EBAC6D /* CommonWalletBuilderTests.swift */; };
 		8489659D2253A46900EBAC6D /* ModuleMocks.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8489659B2253A41E00EBAC6D /* ModuleMocks.swift */; };
+		8489BD8E23381955001D0C76 /* SoraDepositViewModelFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8489BD8D23381955001D0C76 /* SoraDepositViewModelFactory.swift */; };
 		848B6EB4224D5A1100E8A3C9 /* successResultResponse.json in Resources */ = {isa = PBXBuildFile; fileRef = 848B6EAB224D5A1100E8A3C9 /* successResultResponse.json */; };
 		848B6EB6224D5A1100E8A3C9 /* searchResponse.json in Resources */ = {isa = PBXBuildFile; fileRef = 848B6EAC224D5A1100E8A3C9 /* searchResponse.json */; };
 		848B6EB8224D5A1100E8A3C9 /* accounBalanceResponse.json in Resources */ = {isa = PBXBuildFile; fileRef = 848B6EAD224D5A1100E8A3C9 /* accounBalanceResponse.json */; };
@@ -191,6 +197,11 @@
 		8473569E233771B400103EF1 /* SoraFeeInfoFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SoraFeeInfoFactory.swift; sourceTree = "<group>"; };
 		847356A12337725300103EF1 /* String+Sora.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+Sora.swift"; sourceTree = "<group>"; };
 		847356A32337738400103EF1 /* SoraAccountShareFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SoraAccountShareFactory.swift; sourceTree = "<group>"; };
+		847356A62337891900103EF1 /* SoraActionsCollectionViewCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = SoraActionsCollectionViewCell.xib; sourceTree = "<group>"; };
+		847356A823378A2900103EF1 /* SoraActionsCollectionViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SoraActionsCollectionViewCell.swift; sourceTree = "<group>"; };
+		847356AA2337920900103EF1 /* SoraActionsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SoraActionsViewModel.swift; sourceTree = "<group>"; };
+		847356AC2337945800103EF1 /* SoraActionViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SoraActionViewModel.swift; sourceTree = "<group>"; };
+		847356B02337A79500103EF1 /* SoraAccountListViewModelFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SoraAccountListViewModelFactory.swift; sourceTree = "<group>"; };
 		84752C5122A5BCA30068188B /* DashboardReloadableTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DashboardReloadableTests.swift; sourceTree = "<group>"; };
 		84752C5322A6A7F90068188B /* AmountInputConfirmationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AmountInputConfirmationTests.swift; sourceTree = "<group>"; };
 		84752C5522A7F6490068188B /* searchInvoiceResponse.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = searchInvoiceResponse.json; sourceTree = "<group>"; };
@@ -199,6 +210,7 @@
 		8481A58422FC537C0056D3D4 /* WalletDefaultInputValidatorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WalletDefaultInputValidatorTests.swift; sourceTree = "<group>"; };
 		84896598225397F100EBAC6D /* CommonWalletBuilderTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommonWalletBuilderTests.swift; sourceTree = "<group>"; };
 		8489659B2253A41E00EBAC6D /* ModuleMocks.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ModuleMocks.swift; sourceTree = "<group>"; };
+		8489BD8D23381955001D0C76 /* SoraDepositViewModelFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SoraDepositViewModelFactory.swift; sourceTree = "<group>"; };
 		848B6EAB224D5A1100E8A3C9 /* successResultResponse.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = successResultResponse.json; sourceTree = "<group>"; };
 		848B6EAC224D5A1100E8A3C9 /* searchResponse.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = searchResponse.json; sourceTree = "<group>"; };
 		848B6EAD224D5A1100E8A3C9 /* accounBalanceResponse.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = accounBalanceResponse.json; sourceTree = "<group>"; };
@@ -374,6 +386,7 @@
 		8406372423375F0200D63496 /* Sora */ = {
 			isa = PBXGroup;
 			children = (
+				847356A52337889600103EF1 /* AccountActions */,
 				847356A02337724500103EF1 /* Helpers */,
 				8473567B2337670600103EF1 /* Resources */,
 				8406372523375F2200D63496 /* SoraDemo.swift */,
@@ -381,6 +394,8 @@
 				8473569C23376DB100103EF1 /* SoraDemo+Mock.swift */,
 				8473569E233771B400103EF1 /* SoraFeeInfoFactory.swift */,
 				847356A32337738400103EF1 /* SoraAccountShareFactory.swift */,
+				847356B02337A79500103EF1 /* SoraAccountListViewModelFactory.swift */,
+				8489BD8D23381955001D0C76 /* SoraDepositViewModelFactory.swift */,
 			);
 			path = Sora;
 			sourceTree = "<group>";
@@ -572,6 +587,17 @@
 				847356A12337725300103EF1 /* String+Sora.swift */,
 			);
 			path = Helpers;
+			sourceTree = "<group>";
+		};
+		847356A52337889600103EF1 /* AccountActions */ = {
+			isa = PBXGroup;
+			children = (
+				847356A823378A2900103EF1 /* SoraActionsCollectionViewCell.swift */,
+				847356A62337891900103EF1 /* SoraActionsCollectionViewCell.xib */,
+				847356AA2337920900103EF1 /* SoraActionsViewModel.swift */,
+				847356AC2337945800103EF1 /* SoraActionViewModel.swift */,
+			);
+			path = AccountActions;
 			sourceTree = "<group>";
 		};
 		84752C4E22A5BC6F0068188B /* Dashboard */ = {
@@ -921,6 +947,7 @@
 				847356982337679D00103EF1 /* soraContactsResponse.json in Resources */,
 				607FACDD1AFB9204008FA782 /* Images.xcassets in Resources */,
 				841550E2228D50DA001F18A7 /* transferFailResponse.json in Resources */,
+				847356A72337891900103EF1 /* SoraActionsCollectionViewCell.xib in Resources */,
 				84F622BB2310016D00D5D6BA /* feeNotAvailable.json in Resources */,
 				84FA00982269BB33005DA950 /* historyEmptyResponse.json in Resources */,
 			);
@@ -1133,14 +1160,17 @@
 			files = (
 				8481A58322FC51060056D3D4 /* DemoInputValidatorFactory.swift in Sources */,
 				8B8B4C8422AEC4DC00D77443 /* DemoStyle.swift in Sources */,
+				847356AB2337920900103EF1 /* SoraActionsViewModel.swift in Sources */,
 				848B6ED3224D7B1D00E8A3C9 /* LoadableBundleClass.swift in Sources */,
 				84BA4EFA225E36AA005E6AC3 /* NumberFormatter+Demo.swift in Sources */,
 				84FA00942269B677005DA950 /* DefaultEmptyStateDataSource.swift in Sources */,
+				847356A923378A2900103EF1 /* SoraActionsCollectionViewCell.swift in Sources */,
 				84C180592253AD0800F19858 /* DemoProtocol.swift in Sources */,
 				84FA00962269BA20005DA950 /* DefaultEmptyStateDataSource+Module.swift in Sources */,
 				84C1805D2253B01000F19858 /* DemoNetworkResolver.swift in Sources */,
 				848B6EBE224D5A1100E8A3C9 /* ServiceMock.swift in Sources */,
 				84D8D9A622F72C8B00C9B9C7 /* CommandDecoratorDemo.swift in Sources */,
+				847356B12337A79500103EF1 /* SoraAccountListViewModelFactory.swift in Sources */,
 				607FACD81AFB9204008FA782 /* DemoListViewController.swift in Sources */,
 				8473569F233771B400103EF1 /* SoraFeeInfoFactory.swift in Sources */,
 				8406372623375F2200D63496 /* SoraDemo.swift in Sources */,
@@ -1156,6 +1186,8 @@
 				84D8D9AA22F730F300C9B9C7 /* DialogCommandDecoratorFactory.swift in Sources */,
 				84C1806D22551E0600F19858 /* DemoHeaderViewModel.swift in Sources */,
 				607FACD61AFB9204008FA782 /* AppDelegate.swift in Sources */,
+				847356AD2337945800103EF1 /* SoraActionViewModel.swift in Sources */,
+				8489BD8E23381955001D0C76 /* SoraDepositViewModelFactory.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

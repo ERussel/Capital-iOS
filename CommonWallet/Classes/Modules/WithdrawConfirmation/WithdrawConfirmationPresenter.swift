@@ -44,7 +44,9 @@ final class WithdrawConfirmationPresenter {
         self.feeInfoFactory = feeInfoFactory
     }
 
-    private func prepareSingleAmountViewModel(for amount: Decimal, title: String, hasIcon: Bool) -> WalletFormViewModel {
+    private func prepareSingleAmountViewModel(for amount: Decimal,
+                                              title: String,
+                                              hasIcon: Bool) -> WalletFormViewModel {
         let amountString = amountFormatter.string(from: amount as NSNumber) ?? ""
 
         let details = asset.symbol + amountString
@@ -109,6 +111,21 @@ final class WithdrawConfirmationPresenter {
             }
 
             viewModels.append(contentsOf: mainFeeViewModels)
+
+            let totalAmount: Decimal = mainFees.reduce(amount) { (result, fee) in
+                guard let decimalFee = Decimal(string: fee.amount.value) else {
+                    return result
+                }
+
+                return result + decimalFee
+            }
+
+            let totalAmountViewModel = prepareSingleAmountViewModel(for: totalAmount,
+                                                                    title: "Total amount",
+                                                                    hasIcon: true)
+
+            viewModels.append(totalAmountViewModel)
+
         } else {
             let amountViewModel = prepareSingleAmountViewModel(for: amount, title: "Amount", hasIcon: true)
             viewModels.append(amountViewModel)
@@ -133,30 +150,8 @@ final class WithdrawConfirmationPresenter {
                                    details: withdrawInfo.details)
     }
 
-    private func createAccessoryViewModel() -> AccessoryViewModelProtocol {
-        let accessoryViewModel = AccessoryViewModel(title: "", action: "Withdraw")
-
-        guard let amountDecimal = Decimal(string: withdrawInfo.amount.value) else {
-            return accessoryViewModel
-        }
-
-        let mainFees = withdrawInfo.fees.filter( { $0.assetId.identifier() == asset.identifier.identifier() })
-
-        let totalAmount = mainFees.reduce(amountDecimal) { (result, fee) in
-            guard let decimalFee = Decimal(string: fee.amount.value) else {
-                return result
-            }
-
-            return result + decimalFee
-        }
-
-        guard let totalAmountString = amountFormatter.string(from: totalAmount as NSNumber) else {
-            return accessoryViewModel
-        }
-
-        accessoryViewModel.title = "Total amount \(asset.symbol)\(totalAmountString)"
-        accessoryViewModel.numberOfLines = 2
-
+    private func prepareAccessoryViewModel() -> AccessoryViewModelProtocol {
+        let accessoryViewModel = AccessoryViewModel(title: withdrawOption.shortTitle, action: "Next")
         return accessoryViewModel
     }
 

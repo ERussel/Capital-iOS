@@ -6,12 +6,20 @@
 import Foundation
 import RobinHood
 
+typealias WalletQRServiceCompletionBlock = (Result<UIImage, Error>?) -> Void
+
 protocol WalletQRServiceProtocol: class {
     @discardableResult
-    func generate(from info: ReceiveInfo,
+    func generate<I: Codable>(from info: I,
+                              qrSize: CGSize,
+                              runIn queue: DispatchQueue,
+                              completionBlock: @escaping WalletQRServiceCompletionBlock) throws -> Operation
+
+    @discardableResult
+    func generate(using data: Data,
                   qrSize: CGSize,
                   runIn queue: DispatchQueue,
-                  completionBlock: @escaping (Result<UIImage, Error>?) -> Void) throws -> Operation
+                  completionBlock: @escaping WalletQRServiceCompletionBlock) -> Operation
 }
 
 final class WalletQRService {
@@ -31,12 +39,24 @@ final class WalletQRService {
 
 extension WalletQRService: WalletQRServiceProtocol {
     @discardableResult
-    func generate(from info: ReceiveInfo,
+    func generate<I: Codable>(from info: I,
+                              qrSize: CGSize,
+                              runIn queue: DispatchQueue,
+                              completionBlock: @escaping WalletQRServiceCompletionBlock) throws -> Operation {
+        let payload = try encoder.encode(info)
+        return generate(using: payload,
+                        qrSize: qrSize,
+                        runIn: queue,
+                        completionBlock: completionBlock)
+    }
+
+    @discardableResult
+    func generate(using data: Data,
                   qrSize: CGSize,
                   runIn queue: DispatchQueue,
-                  completionBlock: @escaping (Result<UIImage, Error>?) -> Void) throws -> Operation {
-        let payload = try encoder.encode(receiverInfo: info)
-        let operation = operationFactory.createCreationOperation(for: payload, qrSize: qrSize)
+                  completionBlock: @escaping WalletQRServiceCompletionBlock) throws -> Operation {
+
+        let operation = operationFactory.createCreationOperation(for: data, qrSize: qrSize)
 
         operation.completionBlock = {
             queue.async {

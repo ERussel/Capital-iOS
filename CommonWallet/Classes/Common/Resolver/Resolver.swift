@@ -17,6 +17,7 @@ protocol ResolverProtocol: class {
     var invoiceScanConfiguration: InvoiceScanConfigurationProtocol { get }
     var receiveConfiguration: ReceiveAmountConfigurationProtocol { get }
     var transactionDetailsConfiguration: TransactionDetailsConfigurationProtocol { get }
+    var depositConfiguration: DepositConfigurationProtocol? { get }
     var navigation: NavigationProtocol? { get }
     var logger: WalletLoggerProtocol? { get }
     var amountFormatter: NumberFormatter { get }
@@ -40,6 +41,7 @@ final class Resolver: ResolverProtocol {
     var invoiceScanConfiguration: InvoiceScanConfigurationProtocol
     var receiveConfiguration: ReceiveAmountConfigurationProtocol
     var transactionDetailsConfiguration: TransactionDetailsConfigurationProtocol
+    var depositConfiguration: DepositConfigurationProtocol?
     var inputValidatorFactory: WalletInputValidatorFactoryProtocol
     var feeCalculationFactory: FeeCalculationFactoryProtocol
     var commandDecoratorFactory: WalletCommandDecoratorFactoryProtocol?

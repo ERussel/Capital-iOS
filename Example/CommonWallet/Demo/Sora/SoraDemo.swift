@@ -29,13 +29,20 @@ final class SoraDemo: DemoFactoryProtocol {
             .with(inputValidatorFactory: DemoInputValidatorFactory())
             .with(feeInfoFactory: SoraFeeInfoFactory())
 
-        try setupAccountListModule(builder: walletBuilder.accountListModuleBuilder)
+        let accountListActions = createAccountListActions(for: walletBuilder.accountListModuleBuilder)
+        let accountListViewModelFactory = SoraAccountListViewModelFactory(actionsViewModel: accountListActions)
+
+        try setupAccountListModule(builder: walletBuilder.accountListModuleBuilder,
+                                   viewModelFactory: accountListViewModelFactory)
         setupHistoryModule(builder: walletBuilder.historyModuleBuilder)
         setupContactsModule(builder: walletBuilder.contactsModuleBuilder)
         setupReceiveModule(builder: walletBuilder.receiveModuleBuilder, assets: account.assets)
+        setupDepositModule(builder: walletBuilder.depositModuleBuilder)
         setupStyle(builder: walletBuilder.styleBuilder)
 
         let walletContext = try walletBuilder.build()
+
+        setupAccountListCommand(for: accountListActions, context: walletContext)
 
         try mock(networkResolver: networkResolver, with: account.assets)
 
@@ -46,7 +53,8 @@ final class SoraDemo: DemoFactoryProtocol {
         return rootController
     }
 
-    private func setupAccountListModule(builder: AccountListModuleBuilderProtocol) throws {
+    private func setupAccountListModule(builder: AccountListModuleBuilderProtocol,
+                                        viewModelFactory: AccountListViewModelFactoryProtocol) throws {
         let demoTitleStyle = WalletTextStyle(font: .demoHeader2, color: .black)
         let demoHeaderViewModel = DemoHeaderViewModel(title: "Wallet",
                                                       style: demoTitleStyle)
@@ -56,6 +64,60 @@ final class SoraDemo: DemoFactoryProtocol {
         try builder
             .inserting(viewModelFactory: { demoHeaderViewModel }, at: 0)
             .with(cellNib: demoHeaderNib, for: demoHeaderViewModel.cellReuseIdentifier)
+            .withActions(cellNib: UINib(nibName: "SoraActionsCollectionViewCell",
+                                        bundle: Bundle(for: type(of: self))))
+            .with(listViewModelFactory: viewModelFactory)
+    }
+
+    private func createAccountListActions(for builder: AccountListModuleBuilderProtocol)
+        -> SoraActionsViewModel {
+            let sendStyle = WalletTextStyle(font: .demoBodyBold,
+                                            color: UIColor(red: 208.0 / 255.0,
+                                                           green: 2.0 / 255.0,
+                                                           blue: 27.0 / 255.0,
+                                                           alpha: 1.0))
+
+            let sendAction = SoraActionViewModel(title: "Send",
+                                                 style: sendStyle)
+
+            let receiveStyle = WalletTextStyle(font: .demoBodyBold,
+                                               color: UIColor(red: 0.0 / 255.0,
+                                                              green: 161.0 / 255.0,
+                                                              blue: 103.0 / 255.0,
+                                                              alpha: 1.0))
+
+            let receiveAction = SoraActionViewModel(title: "Receive",
+                                                    style: receiveStyle)
+
+            let depositStyle = WalletTextStyle(font: .demoBodyBold,
+                                               color: UIColor(red: 86.0 / 255.0,
+                                                              green: 160.0 / 255.0,
+                                                              blue: 190.0 / 255.0,
+                                                              alpha: 1.0))
+
+            let depositAction = SoraActionViewModel(title: "Deposit",
+                                                    style: depositStyle)
+
+            return SoraActionsViewModel(cellReuseIdentifier: builder.actionsCellIdentifier,
+                                        itemHeight: 65.0,
+                                        sendViewModel: sendAction,
+                                        receiveViewModel: receiveAction,
+                                        depositViewModel: depositAction)
+    }
+
+    private func setupAccountListCommand(for actions: SoraActionsViewModel,
+                                         context: CommonWalletContextProtocol) {
+        if let sendViewModel = actions.send as? SoraActionViewModel {
+            sendViewModel.underlyingCommand = context.prepareSendCommand(for: nil)
+        }
+
+        if let receiveViewModel = actions.receive as? SoraActionViewModel {
+            receiveViewModel.underlyingCommand = context.prepareReceiveCommand(for: nil)
+        }
+
+        if let depositViewModel = actions.deposit as? SoraActionViewModel {
+            depositViewModel.underlyingCommand = context.prepareDepositCommand()
+        }
     }
 
     private func setupHistoryModule(builder: HistoryModuleBuilderProtocol) {
@@ -76,6 +138,13 @@ final class SoraDemo: DemoFactoryProtocol {
         let accountShareFactory = SoraAccountShareFactory(assets: assets,
                                                           amountFormatter: NumberFormatter.amount)
         builder.with(accountShareFactory: accountShareFactory)
+    }
+
+    private func setupDepositModule(builder: DepositModuleBuilderProtocol) {
+        let ethereumAddress = "0xde00295669a9FD93d5F2819Ec85E40f4cb69702e"
+        let viewModelFactory = SoraDepositViewModelFactory(ethereumAddress: ethereumAddress)
+
+        builder.with(viewModelFactory: viewModelFactory)
     }
 
     private func createAccountSettings() throws -> WalletAccountSettingsProtocol {

@@ -15,7 +15,7 @@ public protocol AccountListViewModelFactoryProtocol: class {
     func createShowMoreViewModel(for delegate: ShowMoreViewModelDelegate?) -> WalletViewModelProtocol?
 }
 
-extension AccountListViewModelFactoryProtocol {
+public extension AccountListViewModelFactoryProtocol {
     func createAssetViewModel(for asset: WalletAsset,
                               balance: BalanceData,
                               commandFactory: WalletCommandFactoryProtocol)

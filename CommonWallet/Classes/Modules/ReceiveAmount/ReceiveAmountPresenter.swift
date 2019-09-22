@@ -19,7 +19,6 @@ final class ReceiveAmountPresenter {
     private(set) var amountInputViewModel: AmountInputViewModel
     private(set) var preferredQRSize: CGSize?
 
-    private var balances: [BalanceData]?
     private var currentImage: UIImage?
 
     var logger: WalletLoggerProtocol?
@@ -168,6 +167,10 @@ extension ReceiveAmountPresenter: ReceiveAmountPresenterProtocol {
                               with: nil)
         }
     }
+
+    func close() {
+        coordinator.close()
+    }
 }
 
 extension ReceiveAmountPresenter: AssetSelectionViewModelObserver {
@@ -207,9 +210,5 @@ extension ReceiveAmountPresenter: ModalPickerViewDelegate {
         assetSelectionViewModel.title = title
 
         assetSelectionViewModel.symbol = newAsset.symbol
-    }
-
-    func close() {
-        coordinator.close()
     }
 }
