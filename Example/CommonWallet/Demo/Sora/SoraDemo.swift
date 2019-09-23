@@ -95,7 +95,7 @@ final class SoraDemo: DemoFactoryProtocol {
                                                               blue: 190.0 / 255.0,
                                                               alpha: 1.0))
 
-            let depositAction = SoraActionViewModel(title: "Deposit",
+            let depositAction = SoraActionViewModel(title: "Move to Sora",
                                                     style: depositStyle)
 
             return SoraActionsViewModel(cellReuseIdentifier: builder.actionsCellIdentifier,
@@ -116,7 +116,8 @@ final class SoraDemo: DemoFactoryProtocol {
         }
 
         if let depositViewModel = actions.deposit as? SoraActionViewModel {
-            depositViewModel.underlyingCommand = context.prepareDepositCommand()
+            depositViewModel.underlyingCommand = context
+                .prepareDepositCommand(with: depositViewModel.title)
         }
     }
 
@@ -209,7 +210,7 @@ final class SoraDemo: DemoFactoryProtocol {
         let ethId = try IRAssetIdFactory.asset(withIdentifier: String.ethAssetId)
         let ethAsset = WalletAsset(identifier: ethId,
                                    symbol: "Ξ",
-                                   details: "ETHER")
+                                   details: "ETH")
 
         return [soraAsset, ethAsset]
     }

@@ -129,7 +129,7 @@
                                     <userDefinedRuntimeAttribute type="boolean" keyPath="_changesContentOpacityWhenHighlighted" value="YES"/>
                                 </userDefinedRuntimeAttributes>
                                 <connections>
-                                    <action selector="actionReceive" destination="3KC-RT-goH" eventType="touchUpInside" id="wwH-HQ-YOa"/>
+                                    <action selector="actionDeposition" destination="3KC-RT-goH" eventType="touchUpInside" id="A7l-jj-fbp"/>
                                 </connections>
                             </view>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="YZ6-SQ-bX8" customClass="RoundedButton" customModule="SoraUI">
@@ -184,7 +184,7 @@
                                     <userDefinedRuntimeAttribute type="boolean" keyPath="_changesContentOpacityWhenHighlighted" value="YES"/>
                                 </userDefinedRuntimeAttributes>
                                 <connections>
-                                    <action selector="actionDeposition" destination="3KC-RT-goH" eventType="touchUpInside" id="4ts-eN-CiK"/>
+                                    <action selector="actionReceive" destination="3KC-RT-goH" eventType="touchUpInside" id="zLG-3D-U3h"/>
                                 </connections>
                             </view>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="2p3-WO-kIM">
@@ -234,8 +234,8 @@
             </constraints>
             <viewLayoutGuide key="safeArea" id="pm8-xV-IAB"/>
             <connections>
-                <outlet property="depositButton" destination="YZ6-SQ-bX8" id="P3N-bn-Myl"/>
-                <outlet property="receiveButton" destination="8TI-XJ-ZEE" id="Wfj-7o-wn1"/>
+                <outlet property="depositButton" destination="8TI-XJ-ZEE" id="t0b-ZV-cXP"/>
+                <outlet property="receiveButton" destination="YZ6-SQ-bX8" id="C2U-Qe-s3s"/>
                 <outlet property="sendButton" destination="hbG-t9-Xzt" id="1Lt-fa-Dpd"/>
             </connections>
         </collectionViewCell>

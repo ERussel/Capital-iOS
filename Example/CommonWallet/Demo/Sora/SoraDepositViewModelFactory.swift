@@ -11,18 +11,18 @@ struct SoraDepositViewModelFactory: DepositViewModelFactoryProtocol {
 
     func createSteps(for asset: WalletAsset) -> [StepViewModel] {
         var steps: [StepViewModel] = []
-        steps.append(StepViewModel(index: 1, title: "Scan or export your deposit Ethereum address"))
+        steps.append(StepViewModel(index: 1, title: "Scan qr code or export Ethereum address"))
 
         switch asset.identifier.identifier() {
         case String.xorAssetId:
-            steps.append(StepViewModel(index: 2, title: "Send XOR token to the Ethereum address"))
+            steps.append(StepViewModel(index: 2, title: "Send XOR token to this Ethereum address"))
 
             let title3 = "Return to the Sora app and wait until your XOR balance updates"
             steps.append(StepViewModel(index: 3, title: title3))
         case String.ethAssetId:
-            steps.append(StepViewModel(index: 2, title: "Send Ether to the Ethereum address"))
+            steps.append(StepViewModel(index: 2, title: "Send Ether to this Ethereum address"))
 
-            let title3 = "Return to the Sora app and wait until your Ether balance updates"
+            let title3 = "Return to the Sora app and wait until your ETH balance updates"
             steps.append(StepViewModel(index: 3, title: title3))
         default:
             break
@@ -41,7 +41,7 @@ struct SoraDepositViewModelFactory: DepositViewModelFactoryProtocol {
         if asset.identifier.identifier() == String.xorAssetId {
             title = "To receive XOR asset send XOR token to the Ethereum address:"
         } else {
-            title = "To receive Ether asset send Ether to the Ethereum address:"
+            title = "To receive ETH asset send Ether to the Ethereum address:"
         }
 
         return [qrImage, title, ethereumAddress]

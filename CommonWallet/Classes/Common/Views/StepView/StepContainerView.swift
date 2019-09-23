@@ -20,7 +20,7 @@ final class StepContainerView: UIView {
         configure()
     }
 
-    var spacing: CGFloat = 8.0
+    var spacing: CGFloat = 12.0
 
     override var intrinsicContentSize: CGSize {
         var totalHeight = views.reduce(CGFloat(0.0)) { (result, view) in

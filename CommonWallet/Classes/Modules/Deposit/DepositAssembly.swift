@@ -6,7 +6,7 @@
 import Foundation
 
 final class DepositAssembly: DepositAssemblyProtocol {
-    static func assembleView(resolver: ResolverProtocol) -> DepositViewProtocol? {
+    static func assembleView(resolver: ResolverProtocol, title: String) -> DepositViewProtocol? {
         guard let selectedAsset = resolver.account.assets.first else {
             resolver.logger?.error("No assets found")
             return nil
@@ -18,6 +18,7 @@ final class DepositAssembly: DepositAssemblyProtocol {
         }
 
         let view = DepositViewController(nibName: "DepositViewController", bundle: Bundle(for: self))
+        view.title = title
         view.style = resolver.style
 
         let coordinator = DepositCoordinator(resolver: resolver)

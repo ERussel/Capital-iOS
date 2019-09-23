@@ -1,1 +1,1 @@
-{"status":{"code":"OK","message":"Success"}, "providerAccountId": "notary@notary", "fees": [{"assetId":"xor#sora", "accountId": "notary@notary", "type": "FIXED", "parameters": ["0.1"]}, {"assetId":"eth#sora", "accountId": "notary@notary", "type": "FACTOR", "parameters": ["0.000015"]}]}
+{"status":{"code":"OK","message":"Success"}, "providerAccountId": "notary@notary", "fees": [{"assetId":"xor#sora", "accountId": "notary@notary", "type": "FIXED", "parameters": ["0.1"]}, {"assetId":"eth#sora", "accountId": "notary@notary", "type": "FIXED", "parameters": ["0.000015"]}]}

@@ -23,5 +23,5 @@ protocol DepositCoordinatorProtocol: CoordinatorProtocol, PickerPresentable, Sha
 }
 
 protocol DepositAssemblyProtocol: class {
-    static func assembleView(resolver: ResolverProtocol) -> DepositViewProtocol?
+    static func assembleView(resolver: ResolverProtocol, title: String) -> DepositViewProtocol?
 }

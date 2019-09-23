@@ -11,9 +11,6 @@
     </dependencies>
     <objects>
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="DepositViewController" customModule="CommonWallet" customModuleProvider="target">
-            <userDefinedRuntimeAttributes>
-                <userDefinedRuntimeAttribute type="string" keyPath="title" value="Deposit"/>
-            </userDefinedRuntimeAttributes>
             <connections>
                 <outlet property="optionControl" destination="5py-R8-tje" id="H2c-di-PuQ"/>
                 <outlet property="qrBackgroundHeight" destination="c7s-Ve-YTY" id="ZIQ-ox-A3n"/>
