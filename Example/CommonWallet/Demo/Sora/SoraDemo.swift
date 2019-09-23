@@ -67,6 +67,7 @@ final class SoraDemo: DemoFactoryProtocol {
             .withActions(cellNib: UINib(nibName: "SoraActionsCollectionViewCell",
                                         bundle: Bundle(for: type(of: self))))
             .with(listViewModelFactory: viewModelFactory)
+            .with(assetCellStyleFactory: SoraAssetCellStyleFactory())
     }
 
     private func createAccountListActions(for builder: AccountListModuleBuilderProtocol)

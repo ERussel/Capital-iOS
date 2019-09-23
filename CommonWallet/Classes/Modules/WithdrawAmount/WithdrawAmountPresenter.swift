@@ -378,7 +378,7 @@ final class WithdrawAmountPresenter {
             let message: String
 
             if let asset = assets.first(where: { $0.identifier.identifier() == assetId }) {
-                message = "Sorry, you don't have enough \(asset.symbol) asset to withdraw specified amount."
+                message = "Sorry, you don't have enough \(asset.details) asset to withdraw specified amount."
             } else {
                 message = "Sorry, you don't have enough funds to withdraw specified amount."
             }

@@ -98,6 +98,7 @@
 		84AF3DD92297D442008725C3 /* accountBalanceSingleResponse.json in Resources */ = {isa = PBXBuildFile; fileRef = 84AF3DD82297D442008725C3 /* accountBalanceSingleResponse.json */; };
 		84AF3DDA2297D442008725C3 /* accountBalanceSingleResponse.json in Resources */ = {isa = PBXBuildFile; fileRef = 84AF3DD82297D442008725C3 /* accountBalanceSingleResponse.json */; };
 		84AFF10C22B291550062FD3D /* historySmallResponse.json in Resources */ = {isa = PBXBuildFile; fileRef = 84AFF10B22B291550062FD3D /* historySmallResponse.json */; };
+		84B70FB823397920008B0AA0 /* SoraAssetCellStyleFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84B70FB723397920008B0AA0 /* SoraAssetCellStyleFactory.swift */; };
 		84BA4EFA225E36AA005E6AC3 /* NumberFormatter+Demo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84BA4EF9225E36AA005E6AC3 /* NumberFormatter+Demo.swift */; };
 		84C180552253AA0400F19858 /* DemoListViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 84C180542253AA0400F19858 /* DemoListViewController.xib */; };
 		84C180592253AD0800F19858 /* DemoProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84C180582253AD0800F19858 /* DemoProtocol.swift */; };
@@ -235,6 +236,7 @@
 		84AF3DD62296F068008725C3 /* ReceiveAmountTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReceiveAmountTests.swift; sourceTree = "<group>"; };
 		84AF3DD82297D442008725C3 /* accountBalanceSingleResponse.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = accountBalanceSingleResponse.json; sourceTree = "<group>"; };
 		84AFF10B22B291550062FD3D /* historySmallResponse.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = historySmallResponse.json; sourceTree = "<group>"; };
+		84B70FB723397920008B0AA0 /* SoraAssetCellStyleFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SoraAssetCellStyleFactory.swift; sourceTree = "<group>"; };
 		84BA4EF9225E36AA005E6AC3 /* NumberFormatter+Demo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NumberFormatter+Demo.swift"; sourceTree = "<group>"; };
 		84C180542253AA0400F19858 /* DemoListViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = DemoListViewController.xib; sourceTree = "<group>"; };
 		84C180582253AD0800F19858 /* DemoProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DemoProtocol.swift; sourceTree = "<group>"; };
@@ -396,6 +398,7 @@
 				847356A32337738400103EF1 /* SoraAccountShareFactory.swift */,
 				847356B02337A79500103EF1 /* SoraAccountListViewModelFactory.swift */,
 				8489BD8D23381955001D0C76 /* SoraDepositViewModelFactory.swift */,
+				84B70FB723397920008B0AA0 /* SoraAssetCellStyleFactory.swift */,
 			);
 			path = Sora;
 			sourceTree = "<group>";
@@ -1180,6 +1183,7 @@
 				848B6EC0224D5A1100E8A3C9 /* BaseServiceMock.swift in Sources */,
 				8473569D23376DB100103EF1 /* SoraDemo+Mock.swift in Sources */,
 				84C1805B2253AD8600F19858 /* DefaultDemo.swift in Sources */,
+				84B70FB823397920008B0AA0 /* SoraAssetCellStyleFactory.swift in Sources */,
 				8473567A233766FD00103EF1 /* SoraNetworkMock.swift in Sources */,
 				847356A22337725300103EF1 /* String+Sora.swift in Sources */,
 				84D8D9AC22F7315900C9B9C7 /* DialogCommandDecorator.swift in Sources */,
