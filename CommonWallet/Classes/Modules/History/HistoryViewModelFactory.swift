@@ -66,10 +66,16 @@ final class HistoryViewModelFactory {
         if  includesFeeInAmount,
             let transactionType = transactionTypes[transaction.type],
             !transactionType.isIncome,
-            let feeString = transaction.fee,
-            let feeValue = Decimal(string: feeString) {
+            let fees = transaction.fees {
 
-            totalAmountValue += feeValue
+            totalAmountValue = fees.filter({ $0.assetId == transaction.assetId })
+                .reduce(totalAmountValue) { (result, fee) in
+                    if let feeValue = fee.decimalAmount {
+                        return result + feeValue
+                    } else {
+                        return result
+                    }
+            }
         }
 
         guard let amountDisplayString = amountFormatter.string(from: (totalAmountValue as NSNumber)) else {
