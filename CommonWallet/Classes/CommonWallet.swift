@@ -283,18 +283,21 @@ extension CommonWalletBuilder: CommonWalletBuilderProtocol {
 
         let receiveConfiguration = privateReceiveModuleBuilder.build()
 
+        let transactionDetailsConfiguration = privateTransactionDetailsModuleBuilder.build()
+
         let decorator = WalletInputValidatorFactoryDecorator(descriptionMaxLength: transferDescriptionLimit)
         decorator.underlyingFactory = inputValidatorFactory
 
         let resolver = Resolver(account: account,
-                                networkResolver: networkResolver,
                                 networkOperationFactory: networkOperationFactory,
                                 accountListConfiguration: accountListConfiguration,
                                 historyConfiguration: historyConfiguration,
                                 contactsConfiguration: contactsConfiguration,
                                 invoiceScanConfiguration: invoiceScanConfiguration,
                                 receiveConfiguration: receiveConfiguration,
-                                inputValidatorFactory: decorator)
+                                transactionDetailsConfiguration: transactionDetailsConfiguration,
+                                inputValidatorFactory: decorator,
+                                feeCalculationFactory: feeCalculationFactory)
 
         return resolver
     }

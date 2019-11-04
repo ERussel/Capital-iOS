@@ -78,12 +78,12 @@ final class DepositPresenter {
         qrOperation = nil
     }
 
-    private func processOperation(result: OperationResult<UIImage>) {
+    private func processOperation(result: Result<UIImage, Error>) {
         switch result {
         case .success(let image):
             currentImage = image
             view?.set(qrImage: image)
-        case .error:
+        case .failure:
             view?.showError(message: "Can't generate QR code")
         }
     }

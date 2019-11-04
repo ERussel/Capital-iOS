@@ -1,8 +1,3 @@
-/**
-* Copyright Soramitsu Co., Ltd. All Rights Reserved.
-* SPDX-License-Identifier: GPL-3.0
-*/
-
 import Cuckoo
 @testable import CommonWallet
 
@@ -1483,6 +1478,20 @@ import IrohaCommunication
     
     
     
+     var depositConfiguration: DepositConfigurationProtocol? {
+        get {
+            return cuckoo_manager.getter("depositConfiguration",
+                superclassCall:
+                    
+                    Cuckoo.MockManager.crashOnProtocolSuperclassCall()
+                    ,
+                defaultCall: __defaultImplStub!.depositConfiguration)
+        }
+        
+    }
+    
+    
+    
      var navigation: NavigationProtocol? {
         get {
             return cuckoo_manager.getter("navigation",
@@ -1635,6 +1644,20 @@ import IrohaCommunication
         
     }
     
+    
+    
+     var feeInfoFactory: FeeInfoFactoryProtocol {
+        get {
+            return cuckoo_manager.getter("feeInfoFactory",
+                superclassCall:
+                    
+                    Cuckoo.MockManager.crashOnProtocolSuperclassCall()
+                    ,
+                defaultCall: __defaultImplStub!.feeInfoFactory)
+        }
+        
+    }
+    
 
     
 
@@ -1698,6 +1721,11 @@ import IrohaCommunication
 	    }
 	    
 	    
+	    var depositConfiguration: Cuckoo.ProtocolToBeStubbedReadOnlyProperty<MockResolverProtocol, DepositConfigurationProtocol?> {
+	        return .init(manager: cuckoo_manager, name: "depositConfiguration")
+	    }
+	    
+	    
 	    var navigation: Cuckoo.ProtocolToBeStubbedReadOnlyProperty<MockResolverProtocol, NavigationProtocol?> {
 	        return .init(manager: cuckoo_manager, name: "navigation")
 	    }
@@ -1750,6 +1778,11 @@ import IrohaCommunication
 	    
 	    var qrCoderFactory: Cuckoo.ProtocolToBeStubbedReadOnlyProperty<MockResolverProtocol, WalletQRCoderFactoryProtocol> {
 	        return .init(manager: cuckoo_manager, name: "qrCoderFactory")
+	    }
+	    
+	    
+	    var feeInfoFactory: Cuckoo.ProtocolToBeStubbedReadOnlyProperty<MockResolverProtocol, FeeInfoFactoryProtocol> {
+	        return .init(manager: cuckoo_manager, name: "feeInfoFactory")
 	    }
 	    
 	    
@@ -1818,6 +1851,11 @@ import IrohaCommunication
 	    }
 	    
 	    
+	    var depositConfiguration: Cuckoo.VerifyReadOnlyProperty<DepositConfigurationProtocol?> {
+	        return .init(manager: cuckoo_manager, name: "depositConfiguration", callMatcher: callMatcher, sourceLocation: sourceLocation)
+	    }
+	    
+	    
 	    var navigation: Cuckoo.VerifyReadOnlyProperty<NavigationProtocol?> {
 	        return .init(manager: cuckoo_manager, name: "navigation", callMatcher: callMatcher, sourceLocation: sourceLocation)
 	    }
@@ -1870,6 +1908,11 @@ import IrohaCommunication
 	    
 	    var qrCoderFactory: Cuckoo.VerifyReadOnlyProperty<WalletQRCoderFactoryProtocol> {
 	        return .init(manager: cuckoo_manager, name: "qrCoderFactory", callMatcher: callMatcher, sourceLocation: sourceLocation)
+	    }
+	    
+	    
+	    var feeInfoFactory: Cuckoo.VerifyReadOnlyProperty<FeeInfoFactoryProtocol> {
+	        return .init(manager: cuckoo_manager, name: "feeInfoFactory", callMatcher: callMatcher, sourceLocation: sourceLocation)
 	    }
 	    
 	
@@ -1960,6 +2003,14 @@ import IrohaCommunication
     }
     
     
+     var depositConfiguration: DepositConfigurationProtocol? {
+        get {
+            return DefaultValueRegistry.defaultValue(for: (DepositConfigurationProtocol?).self)
+        }
+        
+    }
+    
+    
      var navigation: NavigationProtocol? {
         get {
             return DefaultValueRegistry.defaultValue(for: (NavigationProtocol?).self)
@@ -2043,6 +2094,14 @@ import IrohaCommunication
      var qrCoderFactory: WalletQRCoderFactoryProtocol {
         get {
             return DefaultValueRegistry.defaultValue(for: (WalletQRCoderFactoryProtocol).self)
+        }
+        
+    }
+    
+    
+     var feeInfoFactory: FeeInfoFactoryProtocol {
+        get {
+            return DefaultValueRegistry.defaultValue(for: (FeeInfoFactoryProtocol).self)
         }
         
     }
@@ -3482,6 +3541,21 @@ public class MockWalletCommandFactoryProtocol: WalletCommandFactoryProtocol, Cuc
     
     
     
+    public func prepareDepositCommand(with title: String) -> WalletPresentationCommandProtocol {
+        
+    return cuckoo_manager.call("prepareDepositCommand(with: String) -> WalletPresentationCommandProtocol",
+            parameters: (title),
+            escapingParameters: (title),
+            superclassCall:
+                
+                Cuckoo.MockManager.crashOnProtocolSuperclassCall()
+                ,
+            defaultCall: __defaultImplStub!.prepareDepositCommand(with: title))
+        
+    }
+    
+    
+    
     public func preparePresentationCommand(for controller: UIViewController) -> WalletPresentationCommandProtocol {
         
     return cuckoo_manager.call("preparePresentationCommand(for: UIViewController) -> WalletPresentationCommandProtocol",
@@ -3559,6 +3633,11 @@ public class MockWalletCommandFactoryProtocol: WalletCommandFactoryProtocol, Cuc
 	        return .init(stub: cuckoo_manager.createStub(for: MockWalletCommandFactoryProtocol.self, method: "prepareWithdrawCommand(for: IRAssetId, optionId: String) -> WalletPresentationCommandProtocol", parameterMatchers: matchers))
 	    }
 	    
+	    func prepareDepositCommand<M1: Cuckoo.Matchable>(with title: M1) -> Cuckoo.ProtocolStubFunction<(String), WalletPresentationCommandProtocol> where M1.MatchedType == String {
+	        let matchers: [Cuckoo.ParameterMatcher<(String)>] = [wrap(matchable: title) { $0 }]
+	        return .init(stub: cuckoo_manager.createStub(for: MockWalletCommandFactoryProtocol.self, method: "prepareDepositCommand(with: String) -> WalletPresentationCommandProtocol", parameterMatchers: matchers))
+	    }
+	    
 	    func preparePresentationCommand<M1: Cuckoo.Matchable>(for controller: M1) -> Cuckoo.ProtocolStubFunction<(UIViewController), WalletPresentationCommandProtocol> where M1.MatchedType == UIViewController {
 	        let matchers: [Cuckoo.ParameterMatcher<(UIViewController)>] = [wrap(matchable: controller) { $0 }]
 	        return .init(stub: cuckoo_manager.createStub(for: MockWalletCommandFactoryProtocol.self, method: "preparePresentationCommand(for: UIViewController) -> WalletPresentationCommandProtocol", parameterMatchers: matchers))
@@ -3621,6 +3700,12 @@ public class MockWalletCommandFactoryProtocol: WalletCommandFactoryProtocol, Cuc
 	    }
 	    
 	    @discardableResult
+	    func prepareDepositCommand<M1: Cuckoo.Matchable>(with title: M1) -> Cuckoo.__DoNotUse<(String), WalletPresentationCommandProtocol> where M1.MatchedType == String {
+	        let matchers: [Cuckoo.ParameterMatcher<(String)>] = [wrap(matchable: title) { $0 }]
+	        return cuckoo_manager.verify("prepareDepositCommand(with: String) -> WalletPresentationCommandProtocol", callMatcher: callMatcher, parameterMatchers: matchers, sourceLocation: sourceLocation)
+	    }
+	    
+	    @discardableResult
 	    func preparePresentationCommand<M1: Cuckoo.Matchable>(for controller: M1) -> Cuckoo.__DoNotUse<(UIViewController), WalletPresentationCommandProtocol> where M1.MatchedType == UIViewController {
 	        let matchers: [Cuckoo.ParameterMatcher<(UIViewController)>] = [wrap(matchable: controller) { $0 }]
 	        return cuckoo_manager.verify("preparePresentationCommand(for: UIViewController) -> WalletPresentationCommandProtocol", callMatcher: callMatcher, parameterMatchers: matchers, sourceLocation: sourceLocation)
@@ -3664,6 +3749,10 @@ public class WalletCommandFactoryProtocolStub: WalletCommandFactoryProtocol {
     }
     
     public func prepareWithdrawCommand(for assetId: IRAssetId, optionId: String) -> WalletPresentationCommandProtocol  {
+        return DefaultValueRegistry.defaultValue(for: (WalletPresentationCommandProtocol).self)
+    }
+    
+    public func prepareDepositCommand(with title: String) -> WalletPresentationCommandProtocol  {
         return DefaultValueRegistry.defaultValue(for: (WalletPresentationCommandProtocol).self)
     }
     
@@ -3798,6 +3887,21 @@ public class MockCommonWalletContextProtocol: CommonWalletContextProtocol, Cucko
     
     
     
+    public func prepareDepositCommand(with title: String) -> WalletPresentationCommandProtocol {
+        
+    return cuckoo_manager.call("prepareDepositCommand(with: String) -> WalletPresentationCommandProtocol",
+            parameters: (title),
+            escapingParameters: (title),
+            superclassCall:
+                
+                Cuckoo.MockManager.crashOnProtocolSuperclassCall()
+                ,
+            defaultCall: __defaultImplStub!.prepareDepositCommand(with: title))
+        
+    }
+    
+    
+    
     public func preparePresentationCommand(for controller: UIViewController) -> WalletPresentationCommandProtocol {
         
     return cuckoo_manager.call("preparePresentationCommand(for: UIViewController) -> WalletPresentationCommandProtocol",
@@ -3880,6 +3984,11 @@ public class MockCommonWalletContextProtocol: CommonWalletContextProtocol, Cucko
 	        return .init(stub: cuckoo_manager.createStub(for: MockCommonWalletContextProtocol.self, method: "prepareWithdrawCommand(for: IRAssetId, optionId: String) -> WalletPresentationCommandProtocol", parameterMatchers: matchers))
 	    }
 	    
+	    func prepareDepositCommand<M1: Cuckoo.Matchable>(with title: M1) -> Cuckoo.ProtocolStubFunction<(String), WalletPresentationCommandProtocol> where M1.MatchedType == String {
+	        let matchers: [Cuckoo.ParameterMatcher<(String)>] = [wrap(matchable: title) { $0 }]
+	        return .init(stub: cuckoo_manager.createStub(for: MockCommonWalletContextProtocol.self, method: "prepareDepositCommand(with: String) -> WalletPresentationCommandProtocol", parameterMatchers: matchers))
+	    }
+	    
 	    func preparePresentationCommand<M1: Cuckoo.Matchable>(for controller: M1) -> Cuckoo.ProtocolStubFunction<(UIViewController), WalletPresentationCommandProtocol> where M1.MatchedType == UIViewController {
 	        let matchers: [Cuckoo.ParameterMatcher<(UIViewController)>] = [wrap(matchable: controller) { $0 }]
 	        return .init(stub: cuckoo_manager.createStub(for: MockCommonWalletContextProtocol.self, method: "preparePresentationCommand(for: UIViewController) -> WalletPresentationCommandProtocol", parameterMatchers: matchers))
@@ -3948,6 +4057,12 @@ public class MockCommonWalletContextProtocol: CommonWalletContextProtocol, Cucko
 	    }
 	    
 	    @discardableResult
+	    func prepareDepositCommand<M1: Cuckoo.Matchable>(with title: M1) -> Cuckoo.__DoNotUse<(String), WalletPresentationCommandProtocol> where M1.MatchedType == String {
+	        let matchers: [Cuckoo.ParameterMatcher<(String)>] = [wrap(matchable: title) { $0 }]
+	        return cuckoo_manager.verify("prepareDepositCommand(with: String) -> WalletPresentationCommandProtocol", callMatcher: callMatcher, parameterMatchers: matchers, sourceLocation: sourceLocation)
+	    }
+	    
+	    @discardableResult
 	    func preparePresentationCommand<M1: Cuckoo.Matchable>(for controller: M1) -> Cuckoo.__DoNotUse<(UIViewController), WalletPresentationCommandProtocol> where M1.MatchedType == UIViewController {
 	        let matchers: [Cuckoo.ParameterMatcher<(UIViewController)>] = [wrap(matchable: controller) { $0 }]
 	        return cuckoo_manager.verify("preparePresentationCommand(for: UIViewController) -> WalletPresentationCommandProtocol", callMatcher: callMatcher, parameterMatchers: matchers, sourceLocation: sourceLocation)
@@ -3995,6 +4110,10 @@ public class CommonWalletContextProtocolStub: CommonWalletContextProtocol {
     }
     
     public func prepareWithdrawCommand(for assetId: IRAssetId, optionId: String) -> WalletPresentationCommandProtocol  {
+        return DefaultValueRegistry.defaultValue(for: (WalletPresentationCommandProtocol).self)
+    }
+    
+    public func prepareDepositCommand(with title: String) -> WalletPresentationCommandProtocol  {
         return DefaultValueRegistry.defaultValue(for: (WalletPresentationCommandProtocol).self)
     }
     

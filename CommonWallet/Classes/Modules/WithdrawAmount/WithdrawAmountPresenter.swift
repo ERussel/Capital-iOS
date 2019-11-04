@@ -38,7 +38,6 @@ final class WithdrawAmountPresenter {
     private let dataProviderFactory: DataProviderFactoryProtocol
     private let balanceDataProvider: SingleValueProvider<[BalanceData]>
     private var metaDataProvider: SingleValueProvider<WithdrawMetaData>
-    private let assetTitleFactory: AssetSelectionFactoryProtocol
     private let withdrawViewModelFactory: WithdrawAmountViewModelFactoryProtocol
     private let feeCalculationFactory: FeeCalculationFactoryProtocol
     private let assets: [WalletAsset]

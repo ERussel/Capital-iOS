@@ -6,20 +6,18 @@
 import Foundation
 import RobinHood
 
-typealias WalletQRServiceCompletionBlock = (Result<UIImage, Error>?) -> Void
-
 protocol WalletQRServiceProtocol: class {
     @discardableResult
-    func generate<I: Codable>(from info: I,
-                              qrSize: CGSize,
-                              runIn queue: DispatchQueue,
-                              completionBlock: @escaping WalletQRServiceCompletionBlock) throws -> Operation
+    func generate(from info: ReceiveInfo,
+                  qrSize: CGSize,
+                  runIn queue: DispatchQueue,
+                  completionBlock: @escaping (Result<UIImage, Error>?) -> Void) throws -> Operation
 
     @discardableResult
     func generate(using data: Data,
                   qrSize: CGSize,
                   runIn queue: DispatchQueue,
-                  completionBlock: @escaping WalletQRServiceCompletionBlock) -> Operation
+                  completionBlock: @escaping (Result<UIImage, Error>?) -> Void) -> Operation
 }
 
 final class WalletQRService {
@@ -39,11 +37,11 @@ final class WalletQRService {
 
 extension WalletQRService: WalletQRServiceProtocol {
     @discardableResult
-    func generate<I: Codable>(from info: I,
-                              qrSize: CGSize,
-                              runIn queue: DispatchQueue,
-                              completionBlock: @escaping WalletQRServiceCompletionBlock) throws -> Operation {
-        let payload = try encoder.encode(info)
+    func generate(from info: ReceiveInfo,
+                  qrSize: CGSize,
+                  runIn queue: DispatchQueue,
+                  completionBlock: @escaping (Result<UIImage, Error>?) -> Void) throws -> Operation {
+        let payload = try encoder.encode(receiverInfo: info)
         return generate(using: payload,
                         qrSize: qrSize,
                         runIn: queue,
@@ -54,8 +52,7 @@ extension WalletQRService: WalletQRServiceProtocol {
     func generate(using data: Data,
                   qrSize: CGSize,
                   runIn queue: DispatchQueue,
-                  completionBlock: @escaping WalletQRServiceCompletionBlock) throws -> Operation {
-
+                  completionBlock: @escaping (Result<UIImage, Error>?) -> Void) -> Operation {
         let operation = operationFactory.createCreationOperation(for: data, qrSize: qrSize)
 
         operation.completionBlock = {

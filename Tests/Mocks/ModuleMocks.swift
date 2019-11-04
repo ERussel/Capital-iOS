@@ -1,8 +1,3 @@
-/**
-* Copyright Soramitsu Co., Ltd. All Rights Reserved.
-* SPDX-License-Identifier: GPL-3.0
-*/
-
 import Cuckoo
 @testable import CommonWallet
 
@@ -2611,6 +2606,21 @@ import Cuckoo
     
     
     
+     func set(accessoryFees: [AccessoryFeeViewModelProtocol])  {
+        
+    return cuckoo_manager.call("set(accessoryFees: [AccessoryFeeViewModelProtocol])",
+            parameters: (accessoryFees),
+            escapingParameters: (accessoryFees),
+            superclassCall:
+                
+                Cuckoo.MockManager.crashOnProtocolSuperclassCall()
+                ,
+            defaultCall: __defaultImplStub!.set(accessoryFees: accessoryFees))
+        
+    }
+    
+    
+    
      func didStartLoading()  {
         
     return cuckoo_manager.call("didStartLoading()",
@@ -2703,6 +2713,11 @@ import Cuckoo
 	        return .init(stub: cuckoo_manager.createStub(for: MockAmountViewProtocol.self, method: "set(feeViewModel: FeeViewModelProtocol)", parameterMatchers: matchers))
 	    }
 	    
+	    func set<M1: Cuckoo.Matchable>(accessoryFees: M1) -> Cuckoo.ProtocolStubNoReturnFunction<([AccessoryFeeViewModelProtocol])> where M1.MatchedType == [AccessoryFeeViewModelProtocol] {
+	        let matchers: [Cuckoo.ParameterMatcher<([AccessoryFeeViewModelProtocol])>] = [wrap(matchable: accessoryFees) { $0 }]
+	        return .init(stub: cuckoo_manager.createStub(for: MockAmountViewProtocol.self, method: "set(accessoryFees: [AccessoryFeeViewModelProtocol])", parameterMatchers: matchers))
+	    }
+	    
 	    func didStartLoading() -> Cuckoo.ProtocolStubNoReturnFunction<()> {
 	        let matchers: [Cuckoo.ParameterMatcher<Void>] = []
 	        return .init(stub: cuckoo_manager.createStub(for: MockAmountViewProtocol.self, method: "didStartLoading()", parameterMatchers: matchers))
@@ -2780,6 +2795,12 @@ import Cuckoo
 	    }
 	    
 	    @discardableResult
+	    func set<M1: Cuckoo.Matchable>(accessoryFees: M1) -> Cuckoo.__DoNotUse<([AccessoryFeeViewModelProtocol]), Void> where M1.MatchedType == [AccessoryFeeViewModelProtocol] {
+	        let matchers: [Cuckoo.ParameterMatcher<([AccessoryFeeViewModelProtocol])>] = [wrap(matchable: accessoryFees) { $0 }]
+	        return cuckoo_manager.verify("set(accessoryFees: [AccessoryFeeViewModelProtocol])", callMatcher: callMatcher, parameterMatchers: matchers, sourceLocation: sourceLocation)
+	    }
+	    
+	    @discardableResult
 	    func didStartLoading() -> Cuckoo.__DoNotUse<(), Void> {
 	        let matchers: [Cuckoo.ParameterMatcher<Void>] = []
 	        return cuckoo_manager.verify("didStartLoading()", callMatcher: callMatcher, parameterMatchers: matchers, sourceLocation: sourceLocation)
@@ -2847,6 +2868,10 @@ import Cuckoo
     }
     
      func set(feeViewModel: FeeViewModelProtocol)   {
+        return DefaultValueRegistry.defaultValue(for: (Void).self)
+    }
+    
+     func set(accessoryFees: [AccessoryFeeViewModelProtocol])   {
         return DefaultValueRegistry.defaultValue(for: (Void).self)
     }
     
@@ -7770,6 +7795,21 @@ import IrohaCommunication
     
     
     
+     func set(accessoryFees: [AccessoryFeeViewModelProtocol])  {
+        
+    return cuckoo_manager.call("set(accessoryFees: [AccessoryFeeViewModelProtocol])",
+            parameters: (accessoryFees),
+            escapingParameters: (accessoryFees),
+            superclassCall:
+                
+                Cuckoo.MockManager.crashOnProtocolSuperclassCall()
+                ,
+            defaultCall: __defaultImplStub!.set(accessoryFees: accessoryFees))
+        
+    }
+    
+    
+    
      func didChange(accessoryViewModel: AccessoryViewModelProtocol)  {
         
     return cuckoo_manager.call("didChange(accessoryViewModel: AccessoryViewModelProtocol)",
@@ -7877,6 +7917,11 @@ import IrohaCommunication
 	        return .init(stub: cuckoo_manager.createStub(for: MockWithdrawAmountViewProtocol.self, method: "set(feeViewModel: FeeViewModelProtocol)", parameterMatchers: matchers))
 	    }
 	    
+	    func set<M1: Cuckoo.Matchable>(accessoryFees: M1) -> Cuckoo.ProtocolStubNoReturnFunction<([AccessoryFeeViewModelProtocol])> where M1.MatchedType == [AccessoryFeeViewModelProtocol] {
+	        let matchers: [Cuckoo.ParameterMatcher<([AccessoryFeeViewModelProtocol])>] = [wrap(matchable: accessoryFees) { $0 }]
+	        return .init(stub: cuckoo_manager.createStub(for: MockWithdrawAmountViewProtocol.self, method: "set(accessoryFees: [AccessoryFeeViewModelProtocol])", parameterMatchers: matchers))
+	    }
+	    
 	    func didChange<M1: Cuckoo.Matchable>(accessoryViewModel: M1) -> Cuckoo.ProtocolStubNoReturnFunction<(AccessoryViewModelProtocol)> where M1.MatchedType == AccessoryViewModelProtocol {
 	        let matchers: [Cuckoo.ParameterMatcher<(AccessoryViewModelProtocol)>] = [wrap(matchable: accessoryViewModel) { $0 }]
 	        return .init(stub: cuckoo_manager.createStub(for: MockWithdrawAmountViewProtocol.self, method: "didChange(accessoryViewModel: AccessoryViewModelProtocol)", parameterMatchers: matchers))
@@ -7959,6 +8004,12 @@ import IrohaCommunication
 	    }
 	    
 	    @discardableResult
+	    func set<M1: Cuckoo.Matchable>(accessoryFees: M1) -> Cuckoo.__DoNotUse<([AccessoryFeeViewModelProtocol]), Void> where M1.MatchedType == [AccessoryFeeViewModelProtocol] {
+	        let matchers: [Cuckoo.ParameterMatcher<([AccessoryFeeViewModelProtocol])>] = [wrap(matchable: accessoryFees) { $0 }]
+	        return cuckoo_manager.verify("set(accessoryFees: [AccessoryFeeViewModelProtocol])", callMatcher: callMatcher, parameterMatchers: matchers, sourceLocation: sourceLocation)
+	    }
+	    
+	    @discardableResult
 	    func didChange<M1: Cuckoo.Matchable>(accessoryViewModel: M1) -> Cuckoo.__DoNotUse<(AccessoryViewModelProtocol), Void> where M1.MatchedType == AccessoryViewModelProtocol {
 	        let matchers: [Cuckoo.ParameterMatcher<(AccessoryViewModelProtocol)>] = [wrap(matchable: accessoryViewModel) { $0 }]
 	        return cuckoo_manager.verify("didChange(accessoryViewModel: AccessoryViewModelProtocol)", callMatcher: callMatcher, parameterMatchers: matchers, sourceLocation: sourceLocation)
@@ -8032,6 +8083,10 @@ import IrohaCommunication
     }
     
      func set(feeViewModel: FeeViewModelProtocol)   {
+        return DefaultValueRegistry.defaultValue(for: (Void).self)
+    }
+    
+     func set(accessoryFees: [AccessoryFeeViewModelProtocol])   {
         return DefaultValueRegistry.defaultValue(for: (Void).self)
     }
     

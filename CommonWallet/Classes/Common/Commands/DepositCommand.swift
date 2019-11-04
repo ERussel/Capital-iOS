@@ -10,6 +10,7 @@ final class DepositCommand {
     let resolver: ResolverProtocol
     let title: String
 
+    var animated: Bool = true
     var presentationStyle: WalletPresentationStyle = .modal(inNavigation: true)
 
     init(resolver: ResolverProtocol, title: String) {
@@ -26,6 +27,6 @@ extension DepositCommand: WalletPresentationCommandProtocol {
                 return
         }
 
-        present(view: depositView.controller, in: navigation)
+        present(view: depositView.controller, in: navigation, animated: animated)
     }
 }

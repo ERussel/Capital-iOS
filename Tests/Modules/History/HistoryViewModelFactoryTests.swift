@@ -10,7 +10,7 @@ import IrohaCommunication
 class HistoryViewModelFactoryTests: XCTestCase {
     func testFeeInclusion() {
         do {
-            var assetDataWithFee = try createRandomAssetTransactionData(includeFee: true)
+            var assetDataWithFee = try createRandomAssetTransactionData()
 
             let assetId = try IRAssetIdFactory.asset(withIdentifier: assetDataWithFee.assetId)
             let asset = WalletAsset(identifier: assetId, symbol: "", details: "")
@@ -41,12 +41,19 @@ class HistoryViewModelFactoryTests: XCTestCase {
                 var expectedAmount = amount
 
                 if includesFee {
-                    guard let feeString = assetDataWithFee.fee, let fee = Decimal(string: feeString) else {
+                    guard let fees = assetDataWithFee.fees else {
                         XCTFail("Unexpected missing fee")
                         return
                     }
 
-                    expectedAmount += fee
+                    expectedAmount = fees.filter({ $0.assetId == asset.identifier.identifier() })
+                        .reduce(expectedAmount) { (result, fee) in
+                            if let feeValue = fee.decimalAmount {
+                                return result + feeValue
+                            } else {
+                                return result
+                            }
+                    }
                 }
 
                 guard let currentAmount = viewModelFactory.amountFormatter.number(from: viewModel.amount) else {
