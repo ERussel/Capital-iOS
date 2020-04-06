@@ -55,22 +55,10 @@ final class ReceiveAmountViewController: UIViewController, AdaptiveDesignable {
 
     private var keyboardHandler: KeyboardHandler?
 
-    override var navigationItem: UINavigationItem {
-        let navigationItem = super.navigationItem
-
-        let shareItem = UIBarButtonItem(image: style?.shareIcon,
-                                        style: .plain,
-                                        target: self,
-                                        action: #selector(actionShare))
-        navigationItem.rightBarButtonItem = shareItem
-
-        return navigationItem
-    }
-
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        setupCloseButton()
+        configureNavigationItem()
         adjustLayout()
         applyStyle()
 
@@ -99,12 +87,19 @@ final class ReceiveAmountViewController: UIViewController, AdaptiveDesignable {
         updateLayoutConstraints(for: layoutState)
     }
 
-    private func setupCloseButton() {
+    private func configureNavigationItem() {
         let closeBarItem = UIBarButtonItem(image: style?.closeIcon,
                                            style: .plain,
                                            target: self,
                                            action: #selector(actionClose))
         navigationItem.leftBarButtonItem = closeBarItem
+
+        let shareItem = UIBarButtonItem(image: style?.shareIcon,
+                                        style: .plain,
+                                        target: self,
+                                        action: #selector(actionShare))
+
+        navigationItem.rightBarButtonItem = shareItem
     }
 
     private func applyStyle() {
